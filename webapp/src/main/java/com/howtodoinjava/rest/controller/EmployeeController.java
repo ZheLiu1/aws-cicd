@@ -12,6 +12,7 @@ import com.howtodoinjava.rest.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -22,25 +23,16 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping(path = "/users")
 public class EmployeeController 
 {
     @Autowired
     IUserDAO accountService;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @RequestMapping(value = "/")
     public String hello(@RequestHeader(value="Authorization") String comingM){
-        String[] pureM = comingM.split(" ");
-
-        sun.misc.BASE64Decoder decoder = new sun.misc.BASE64Decoder();
-        String temp = null;
-        try{
-            temp = new String(decoder.decodeBuffer(pureM[1]));
-
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-        String[] userInfo = temp.split(":");
+        String[] userInfo = decodeBase64(comingM);
         String user_name = userInfo[0];
         String user_password = userInfo[1];
         String returnM = null;
@@ -54,17 +46,36 @@ public class EmployeeController
 
     }
 
-    public boolean verify(String user_name, String user_password){
+    private boolean verify(String user_name, String user_password){
         boolean result = false;
 
-        //encode BCrypt
-
-        //query from database, if find match, result = true
         User user = accountService.findAccountByName(user_name);
-        if(user != null && user.getUser_password().equals(user_password))
+        if(user != null && bCryptPasswordEncoder.matches(user_password, user.getUser_password()) )
+        //if( bCryptPasswordEncoder.matches(user_password, "$2a$10$KwffF28hREFYPTtJ7FCguOzc2CBNSzWAICAm4XfDIsAQX0ZKWosSe") )
             result = true;
         return result;
     }
+
+    private String[] decodeBase64(String comimgM){
+        String[] pureM = comimgM.split(" ");
+        sun.misc.BASE64Decoder decoder = new sun.misc.BASE64Decoder();
+        String temp = null;
+        try{
+            temp = new String(decoder.decodeBuffer(pureM[1]));
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        String[] userInfo = temp.split(":");
+        return userInfo;
+    }
+
+    //@GetMapping(path="/test", produces = "application/json")
+    //public String getBcrypt(){
+        //return bCryptPasswordEncoder.encode("123456");
+        //if(bCryptPasswordEncoder.matches("123456","$2a$10$KwffF28hREFYPTtJ7FCguOzc2CBNSzWAICAm4XfDIsAQX0ZKWosSe"))
+            //return "true";
+        //return"false";
+    //}
 
     //@GetMapping(path="/test", produces = "application/json")
     //public String getUserById(){
