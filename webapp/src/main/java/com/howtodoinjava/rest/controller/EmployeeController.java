@@ -1,4 +1,4 @@
- package com.howtodoinjava.rest.controller;
+package com.howtodoinjava.rest.controller;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 @RestController
-public class EmployeeController 
+public class EmployeeController
 {
     @Autowired
     IUserDAO accountService;
@@ -73,7 +73,7 @@ public class EmployeeController
 
         User user = accountService.findAccountByName(user_name);
         if(user != null && bCryptPasswordEncoder.matches(user_password, user.getUser_password()) )
-        //if( bCryptPasswordEncoder.matches(user_password, "$2a$10$KwffF28hREFYPTtJ7FCguOzc2CBNSzWAICAm4XfDIsAQX0ZKWosSe") )
+            //if( bCryptPasswordEncoder.matches(user_password, "$2a$10$KwffF28hREFYPTtJ7FCguOzc2CBNSzWAICAm4XfDIsAQX0ZKWosSe") )
             result = true;
         return result;
     }
@@ -102,7 +102,7 @@ public class EmployeeController
     public boolean isValid(String email){
 
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
-                "[a-zA-Z0-9_+&-]+)@" +
+                "[a-zA-Z0-9_+&*-]+)*@" +
                 "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
                 "A-Z]{2,7}$";
 
@@ -113,39 +113,39 @@ public class EmployeeController
 
     }
 
-        // checking for header
-   @RequestMapping(value = "/user/registertest")
+    // checking for header
+    @RequestMapping(value = "/user/registertest")
     public String addUsertest(@RequestHeader(value="Authorization") String comingM) {
-       String[] userInfo = decodeBase64(comingM);
-       String user_name = userInfo[0];
-       String user_password = userInfo[1];
+        String[] userInfo = decodeBase64(comingM);
+        String user_name = userInfo[0];
+        String user_password = userInfo[1];
 
-       // 2: Duplicate username done
-       User user = accountService.findAccountByName(user_name);
-       if (user.getUser_name().equalsIgnoreCase(user_name)) {
-           return "Duplicate Value enter again!!";
-       }
+        // 2: Duplicate username done
+        User user = accountService.findAccountByName(user_name);
+        if (user.getUser_name().equalsIgnoreCase(user_name)) {
+            return "Duplicate Value enter again!!";
+        }
 
-       //3 : strong password code
-       final PasswordPolicy policy = new PasswordPolicy(BreachDatabase.haveIBeenPwned(5), 8, 64);
+        //3 : strong password code
+        final PasswordPolicy policy = new PasswordPolicy(BreachDatabase.haveIBeenPwned(5), 8, 64);
 
-       System.out.print("The message is:" + policy.check("Kailash@201231"));
+        System.out.print("The message is:" + policy.check("Kailash@201231"));
 
-       // 1: check username for email in proper format
+        // 1: check username for email in proper format
 
-       if (isValid(user_name)) {  //done
-           User use = new User();
-           use.setUser_id(14);
-           use.setUser_name(user_name);
-           use.setUser_password(bCryptPasswordEncoder.encode(user_password));
+        if (isValid(user_name)) {  //done
+            User use = new User();
+            use.setUser_id(14);
+            use.setUser_name(user_name);
+            use.setUser_password(bCryptPasswordEncoder.encode(user_password));
 
-           accountService.add(use);
+            accountService.add(use);
 
 
-           return "Perfect!! KO";
-       }
-       return "Done";
-   }
+            return "Perfect!! KO";
+        }
+        return "Done";
+    }
 
 
 
