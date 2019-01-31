@@ -29,7 +29,7 @@ public class UserDaoImpl implements IUserDAO {
 
     @Override
     public int delete(int id) {
-        return jdbcTemplate.update("DELETE from TABLE user where user_id=?",id);
+        return jdbcTemplate.update("DELETE from user where user_id=?",id);
     }
 
     @Override
