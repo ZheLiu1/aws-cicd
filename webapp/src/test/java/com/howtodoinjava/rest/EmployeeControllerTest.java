@@ -1,6 +1,7 @@
 package com.howtodoinjava.rest;
 
 
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -17,15 +18,15 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
+
+
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-public class SpringBootDemoApplicationTests 
-{   
+public class EmployeeControllerTest {
+
+
     @LocalServerPort
-    int randomServerPort;
-    
-    //Timeout value in milliseconds
-    int timeout = 10_000; @LocalServerPort
     int randomServerPort;
 
     //Timeout value in milliseconds
@@ -49,36 +50,18 @@ public class SpringBootDemoApplicationTests
         clientHttpRequestFactory.setReadTimeout(timeout);
         return clientHttpRequestFactory;
     }
-    
-    public RestTemplate restTemplate;
-    
-    @Before
-    public void setUp() {
-        restTemplate = new RestTemplate(getClientHttpRequestFactory());
-    }
-    
-    private HttpComponentsClientHttpRequestFactory getClientHttpRequestFactory() 
-    {
-        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory
-                          = new HttpComponentsClientHttpRequestFactory();
-        //Connect timeout
-        clientHttpRequestFactory.setConnectTimeout(timeout);
-        
-        //Read timeout
-        clientHttpRequestFactory.setReadTimeout(timeout);
-        return clientHttpRequestFactory;
-    }
-    
+employees
     @Test
-    public void testGetEmployeeList_success() throws URISyntaxException 
+    public void testGetEmployeeList_success() throws URISyntaxException
     {
-        final String baseUrl = "http://localhost:"+randomServerPort+"/employees/";
+        final String baseUrl = "http://localhost:"+randomServerPort+"/postlost/";
         URI uri = new URI(baseUrl);
 
         ResponseEntity<String> result = restTemplate.getForEntity(uri, String.class);
-        
+
         //Verify request succeed
         Assert.assertEquals(200, result.getStatusCodeValue());
-        Assert.assertEquals(true, result.getBody().contains("employeeList"));
+        Assert.assertEquals(true, result.getBody().contains("postlost"));
     }
+
 }
