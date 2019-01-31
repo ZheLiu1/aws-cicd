@@ -1,4 +1,4 @@
-package com.howtodoinjava.rest.controller;
+ package com.howtodoinjava.rest.controller;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -102,7 +102,7 @@ public class EmployeeController
     public boolean isValid(String email){
 
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
-                "[a-zA-Z0-9_+&*-]+)*@" +
+                "[a-zA-Z0-9_+&-]+)@" +
                 "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
                 "A-Z]{2,7}$";
 
