@@ -1,15 +1,18 @@
 package com.howtodoinjava.rest.model;
 
 public class User {
-    private String user_id;
+    private int user_id;
     private String user_name;
     private String user_password;
 
-    public String getUser_id() {
+
+
+
+    public int getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(String user_id) {
+    public void setUser_id(int user_id) {
         this.user_id = user_id;
     }
 
