@@ -11,9 +11,12 @@ import java.util.List;
 public class UserDaoImpl implements IUserDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    //to add to the account
     @Override
     public int add(User account) {
-        return jdbcTemplate.update("insert into user(user_name, user_password) values(?, ?)",
+        return jdbcTemplate.update("insert into user(user_id , user_name, user_password) values(?, ?, ?)",
+                account.getUser_id(),
                 account.getUser_name(),account.getUser_password());
 
     }
@@ -26,7 +29,7 @@ public class UserDaoImpl implements IUserDAO {
 
     @Override
     public int delete(int id) {
-        return jdbcTemplate.update("DELETE from TABLE user where user_id=?",id);
+        return jdbcTemplate.update("DELETE from user where user_id=?",id);
     }
 
     @Override

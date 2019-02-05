@@ -7,12 +7,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="springbootdemo" />
-        <module name="tblog" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="springbootdemo" target="1.8" />
-      <module name="tblog" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
