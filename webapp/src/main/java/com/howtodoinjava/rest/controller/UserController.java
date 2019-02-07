@@ -21,6 +21,7 @@ public class UserController
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+
     @RequestMapping(value = "/", produces = "application/json")
     public HashMap<String,String> httpGet(@RequestHeader(value="Authorization") String comingM){
         String[] userInfo = decodeBase64(comingM);
@@ -63,6 +64,7 @@ public class UserController
         return userInfo;
     }
 
+
     public boolean isValid(String email){
 
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
@@ -77,6 +79,7 @@ public class UserController
 
     }
 
+
     //Post request use of the change
 
     /**
@@ -89,6 +92,7 @@ public class UserController
 
         String user_name = comingM.getUser_name();
         String user_password = comingM.getUser_password();
+
 
         HashMap<String,String> m = new HashMap<>();
 
@@ -105,6 +109,7 @@ public class UserController
         //System.out.print("The message is:" +policy.check(user_password).toString());
 
         if(!policy.check(user_password).toString().equalsIgnoreCase("OK")){
+
             m.put("Error", "The Password is not Strong.Please change it according to NIST!");
             return m;
         }
