@@ -1,29 +1,17 @@
 package com.howtodoinjava.rest.controller;
 
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.codahale.passpol.BreachDatabase;
 import com.codahale.passpol.PasswordPolicy;
 
 
 import com.howtodoinjava.rest.dao.IUserDAO;
-import com.howtodoinjava.rest.dao.UserDaoImpl;
 import com.howtodoinjava.rest.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-
-
-import javax.annotation.Resource;
 
 @RestController
 public class UserController
@@ -33,36 +21,21 @@ public class UserController
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-  /*  @RequestMapping(value = "/")
-    public String hello(@RequestHeader(value="Authorization") String comingM){
+
+    @RequestMapping(value = "/", produces = "application/json")
+    public HashMap<String,String> httpGet(@RequestHeader(value="Authorization") String comingM){
         String[] userInfo = decodeBase64(comingM);
         String user_name = userInfo[0];
         String user_password = userInfo[1];
-        String returnM = null;
+
+        HashMap<String,String> m = new HashMap<>();
 
         if(verify(user_name,user_password)){
             java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            returnM = df.format(System.currentTimeMillis());
+            m.put("Current Time", df.format(System.currentTimeMillis()));
         }else
-            returnM = "You are not logged in!";
-        return returnM;
-
-    }*/
-
-
-    @RequestMapping(value = "/")
-    public String httpGet(@RequestHeader(value="Authorization") String comingM){
-        String[] userInfo = decodeBase64(comingM);
-        String user_name = userInfo[0];
-        String user_password = userInfo[1];
-        String returnM = null;
-
-        if(verify(user_name,user_password)){
-            java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            returnM = df.format(System.currentTimeMillis());
-        }else
-            returnM = "You are not logged in!";
-        return returnM;
+            m.put("Error", "You are not logged in!");
+        return m;
 
     }
 
@@ -92,13 +65,6 @@ public class UserController
     }
 
 
-    /*@PostMapping("/saveuser")
-    public User newCreate(@RequestBody List<String> str){
-
-    }
-
-*/
-
     public boolean isValid(String email){
 
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
@@ -113,60 +79,28 @@ public class UserController
 
     }
 
-        // checking for header
-   @RequestMapping(value = "/user/registertest")
-    public String addUsertest(@RequestHeader(value="Authorization") String comingM) {
-       String[] userInfo = decodeBase64(comingM);
-       String user_name = userInfo[0];
-       String user_password = userInfo[1];
-
-       // 2: Duplicate username done
-       User user = accountService.findAccountByName(user_name);
-       if (user.getUser_name().equalsIgnoreCase(user_name)) {
-           return "Duplicate Value enter again!!";
-       }
-
-       //3 : strong password code
-       final PasswordPolicy policy = new PasswordPolicy(BreachDatabase.haveIBeenPwned(5), 8, 64);
-
-       System.out.print("The message is:" + policy.check("Kailash@201231"));
-
-       // 1: check username for email in proper format
-
-       if (isValid(user_name)) {  //done
-           User use = new User();
-           use.setUser_id(14);
-           use.setUser_name(user_name);
-           use.setUser_password(bCryptPasswordEncoder.encode(user_password));
-
-           accountService.add(use);
-
-
-           return "Perfect!! KO";
-       }
-       return "Done";
-   }
-
-
 
     //Post request use of the change
 
     /**
-     * Adduser method for creating and registering the user
+     * Add user method for creating and registering the user
      * @param comingM: Json response to check and save the value.
      * @return
      */
-    @RequestMapping(value = "/user/register")
-    public String addUser(@RequestBody User comingM){
+    @RequestMapping(value = "/user/register", produces = "application/json")
+    public HashMap<String,String> addUser(@RequestBody User comingM){
 
         String user_name = comingM.getUser_name();
         String user_password = comingM.getUser_password();
 
 
+        HashMap<String,String> m = new HashMap<>();
+
         // 1:: Duplicate username done
         User user= accountService.findAccountByName(user_name);
         if(user!=null && user.getUser_name().equalsIgnoreCase(user_name)){
-            return "Duplicate Value enter again!!";
+            m.put("Error", "Duplicate Value enter again!!");
+            return m;
         }
 
         //2: : strong password code complying NIST
@@ -175,7 +109,9 @@ public class UserController
         //System.out.print("The message is:" +policy.check(user_password).toString());
 
         if(!policy.check(user_password).toString().equalsIgnoreCase("OK")){
-            return "The Password is not Strong.Please change it according to NIST!";
+
+            m.put("Error", "The Password is not Strong.Please change it according to NIST!");
+            return m;
         }
 
         // 3: check username for email in proper format
@@ -188,10 +124,11 @@ public class UserController
             use.setUser_password(bCryptPasswordEncoder.encode(user_password));
 
             accountService.add(use);
-
-            return "Perfect!! KO. You have been registered.";
+            m.put("Success", "Perfect!! KO. You have been registered.");
+            return m;
         }
         //4: check for the pattern of the Email address
-        return "Wrong Email Pattern. Enter Again!!";
+        m.put("Error", "Wrong Email Pattern. Enter Again!!");
+        return m;
     }
 }
