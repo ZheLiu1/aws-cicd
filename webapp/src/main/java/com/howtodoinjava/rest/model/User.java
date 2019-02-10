@@ -5,9 +5,6 @@ public class User {
     private String user_name;
     private String user_password;
 
-
-
-
     public int getUser_id() {
         return user_id;
     }
