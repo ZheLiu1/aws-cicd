@@ -2,6 +2,7 @@ package com.howtodoinjava.rest.controller;
 
 import com.howtodoinjava.rest.dao.INoteDAO;
 import com.howtodoinjava.rest.dao.IUserDAO;
+import com.howtodoinjava.rest.exception.ForbiddenException;
 import com.howtodoinjava.rest.exception.NoteNotFoundException;
 import com.howtodoinjava.rest.exception.UnauthorizedException;
 import com.howtodoinjava.rest.model.Note;
@@ -56,6 +57,8 @@ public class NoteController {
         Note note = noteService.findNoteById(id);
         if(note == null)
             throw new NoteNotFoundException("Not Found");
+        if(!note.getOwner().equals(user_name))
+            throw new ForbiddenException("The user can not access the note");
         return new ResponseEntity<>(note, HttpStatus.OK);
     }
 
