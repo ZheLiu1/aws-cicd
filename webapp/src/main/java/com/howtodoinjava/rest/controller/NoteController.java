@@ -2,6 +2,7 @@ package com.howtodoinjava.rest.controller;
 
 import com.howtodoinjava.rest.dao.INoteDAO;
 import com.howtodoinjava.rest.dao.IUserDAO;
+import com.howtodoinjava.rest.exception.BadRequestException;
 import com.howtodoinjava.rest.exception.ForbiddenException;
 import com.howtodoinjava.rest.exception.NoteNotFoundException;
 import com.howtodoinjava.rest.exception.UnauthorizedException;
@@ -33,11 +34,13 @@ public class NoteController {
 
     //Create a note for the user
     @RequestMapping(value = "/note", produces = "application/json", method = RequestMethod.POST)
-    public ResponseEntity<?> addNote(@RequestHeader(value="Authorization") String comingM) {
+    public ResponseEntity<?> addNote(@RequestHeader(value="Authorization") String comingM, @RequestBody Note note) {
         if(!ifAuthen(comingM))
             throw new UnauthorizedException("User Unauthorized");
 
-        Note note = new Note();
+        if(note.getContent() == null || note.getTitle() == null)
+            throw new BadRequestException("Title or content should not be empty");
+
         String date = df.format(System.currentTimeMillis());
         //random generate a UUID for a note
         UUID uuid = UUID.randomUUID();
