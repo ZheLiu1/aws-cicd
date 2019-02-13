@@ -1,6 +1,5 @@
 package com.howtodoinjava.rest.Service;
 
-import com.howtodoinjava.rest.model.Note;
 import com.howtodoinjava.rest.model.User;
 
 import java.util.List;

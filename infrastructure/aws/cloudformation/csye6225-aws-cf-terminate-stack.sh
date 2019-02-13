@@ -7,7 +7,7 @@ then
 	echo "Deleting the Stack"
 else
 	echo "Stack '$StackName' doesn't exist"
-	exit 0
+	exit 1
 fi
 
 RC1=$(aws cloudformation delete-stack --stack-name $StackName)
@@ -16,5 +16,5 @@ then
 	echo "Stack Deleted"
 else
 	echo "Something Went Wrong"
-	exit 0
+	exit 1
 fi
