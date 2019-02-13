@@ -1,7 +1,6 @@
 package com.howtodoinjava.rest.Service;
 
 import com.howtodoinjava.rest.dao.IUserDAO;
-import com.howtodoinjava.rest.model.Note;
 import com.howtodoinjava.rest.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
