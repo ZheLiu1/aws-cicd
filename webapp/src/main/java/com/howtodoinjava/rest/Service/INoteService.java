@@ -13,6 +13,8 @@ public interface INoteService {
 
     int deleteNote(String id);
 
+    int deleteOwner(String id);
+
     Note findNoteById(String id);
 
     String findOwnerById(String id);

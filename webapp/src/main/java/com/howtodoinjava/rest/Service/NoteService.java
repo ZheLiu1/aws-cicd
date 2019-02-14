@@ -57,6 +57,11 @@ public class NoteService implements INoteService {
 
     @Override
     public int deleteNote(String id){
-        return noteDAO.delete(id);
+        return noteDAO.deleteNote(id);
+    }
+
+    @Override
+    public int deleteOwner(String id){
+        return noteDAO.deleteOwner(id);
     }
 }

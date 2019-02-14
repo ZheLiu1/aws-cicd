@@ -156,6 +156,7 @@ public class NoteController {
             throw new UnauthorizedException("User Unauthorized");
         //delete
         noteService.deleteNote(id);
+        noteService.deleteOwner(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }

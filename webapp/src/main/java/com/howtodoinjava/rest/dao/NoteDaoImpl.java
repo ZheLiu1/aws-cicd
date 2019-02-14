@@ -89,8 +89,13 @@ public class NoteDaoImpl implements INoteDAO{
     }
 
     @Override
-    public int delete(String id) {
+    public int deleteNote(String id) {
         return jdbcTemplate.update("DELETE from note where id=?",id);
+    }
+
+    @Override
+    public int deleteOwner(String id) {
+        return jdbcTemplate.update("DELETE from owners where id=?",id);
     }
 }
 
