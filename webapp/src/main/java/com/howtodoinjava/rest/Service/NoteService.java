@@ -13,7 +13,7 @@ public class NoteService implements INoteService {
     @Override
     public int addNote(Note note){
         return noteDAO.addNote(note);
-    };
+    }
 
     @Override
     public Note findNoteById(String id){

@@ -67,5 +67,9 @@ public class NoteDaoImpl implements INoteDAO{
                 account.getTitle(), account.getContent(), date, account.getId());
     }
 
+    @Override
+    public int deleteNote(String id) {
+        return jdbcTemplate.update("DELETE FROM note WHERE id = ?", id);
+    }
 }
 
