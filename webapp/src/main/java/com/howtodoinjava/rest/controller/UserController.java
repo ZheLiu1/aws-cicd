@@ -22,15 +22,16 @@ public class UserController
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
-    @RequestMapping(value = "/", produces = "application/json")
+    @RequestMapping(value = "/", produces = "application/json", method = RequestMethod.GET)
     public HashMap<String,String> httpGet(@RequestHeader(value="Authorization") String comingM){
         String[] userInfo = decodeBase64(comingM);
         String user_name = userInfo[0];
         String user_password = userInfo[1];
+        User user = accountService.findAccountByName(user_name);
 
         HashMap<String,String> m = new HashMap<>();
 
-        if(verify(user_name,user_password)){
+        if(verify(user_password,user)){
             java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             m.put("Current Time", df.format(System.currentTimeMillis()));
         }else
@@ -39,19 +40,15 @@ public class UserController
 
     }
 
-
-
-    private boolean verify(String user_name, String user_password){
+    private boolean verify(String user_password, User user){
         boolean result = false;
-
-        User user = accountService.findAccountByName(user_name);
         if(user != null && bCryptPasswordEncoder.matches(user_password, user.getUser_password()) )
         //if( bCryptPasswordEncoder.matches(user_password, "$2a$10$KwffF28hREFYPTtJ7FCguOzc2CBNSzWAICAm4XfDIsAQX0ZKWosSe") )
             result = true;
         return result;
     }
 
-    private String[] decodeBase64(String comimgM){
+    protected static String[] decodeBase64(String comimgM){
         String[] pureM = comimgM.split(" ");
         sun.misc.BASE64Decoder decoder = new sun.misc.BASE64Decoder();
         String temp = null;
@@ -87,7 +84,7 @@ public class UserController
      * @param comingM: Json response to check and save the value.
      * @return
      */
-    @RequestMapping(value = "/user/register", produces = "application/json")
+    @RequestMapping(value = "/user/register", produces = "application/json", method = RequestMethod.POST)
     public HashMap<String,String> addUser(@RequestBody User comingM){
 
         String user_name = comingM.getUser_name();
