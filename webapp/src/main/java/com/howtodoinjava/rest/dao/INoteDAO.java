@@ -11,13 +11,15 @@ import java.util.List;
 public interface INoteDAO {
     int addNote(Note note);
 
-
+    int addOwner(String id, String owner);
 
     Note findNoteById(String id);
 
+    String findOwnerById(String id);
 
-    List<Note> findAllNote(String user);
-
+    List<String> findIdByOwner(String owner);
 
     int update(Note account);
+
+    int delete(String id);
 }
