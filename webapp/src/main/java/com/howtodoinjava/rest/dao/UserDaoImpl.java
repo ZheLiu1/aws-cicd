@@ -1,6 +1,5 @@
 package com.howtodoinjava.rest.dao;
 
-import com.howtodoinjava.rest.model.Note;
 import com.howtodoinjava.rest.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
