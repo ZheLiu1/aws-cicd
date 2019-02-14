@@ -58,7 +58,11 @@ public class NoteController {
         note.setId(uuid.toString());
         note.setCreated_on(date);
         note.setOwner(user_name);
+<<<<<<< HEAD
         note.setLast_updated_on("New Note");
+=======
+        note.setLast_updated_on(date);
+>>>>>>> e24ffdfbe1217302e6d8859acb3da208d6971b51
         noteService.addNote(note);
         return new ResponseEntity<>( note, HttpStatus.CREATED);
     }
@@ -124,17 +128,45 @@ public class NoteController {
     //Update a note for the user
 
     /**
+<<<<<<< HEAD
      * Update a note for a user
+=======
+
+     * Get note for a user with the provided id for the user
+>>>>>>> e24ffdfbe1217302e6d8859acb3da208d6971b51
      * @param comingM: Auth code
      * @param id
      * @return
      */
 
+<<<<<<< HEAD
     @RequestMapping(value = "/editNote/{id}", produces = "application/json", method = RequestMethod.PUT)
     public ResponseEntity<?> editNote(@RequestHeader(value="Authorization") String comingM, @RequestBody Note note , @PathVariable("id") String id) {
 
         //will check the authorization of the user
         if(!ifAuthen(comingM))
+=======
+//  delete note
+    @RequestMapping(value = "/note/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteNote(@RequestHeader(value = "Authorization") String comingM, @PathVariable("id") String id) {
+        if (!ifAuthen(comingM))
+            throw new UnauthorizedException("User Unauthorized");
+        Note note = noteService.findNoteById(id);
+
+        if(note == null)
+            throw new BadRequestException("Note not found");
+
+        else if (!note.getOwner().equals(user_name))
+            throw new BadRequestException("User does not own the note");
+
+        noteService.deleteNote(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /*@RequestMapping(value = "/note/{id}", produces = "application/json", method = RequestMethod.GET)
+    public ResponseEntity<?> noteUpdate(@RequestHeader(value="Authorization") String comingM, @PathVariable("id") String id) {
+        if (!ifAuthen(comingM))
+>>>>>>> e24ffdfbe1217302e6d8859acb3da208d6971b51
             throw new UnauthorizedException("User Unauthorized");
         // will check if the body does not contain something
         if(note.getContent() == null || note.getTitle() == null)
@@ -156,6 +188,7 @@ public class NoteController {
         // return the new note created in database
         return new ResponseEntity<>( noteService.findNoteById(id), HttpStatus.CREATED);
     }
+
 
 
 
