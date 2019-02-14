@@ -1,7 +1,10 @@
 package com.howtodoinjava.rest.controller;
 
 import com.howtodoinjava.rest.dao.IUserDAO;
-import com.howtodoinjava.rest.exception.*;
+import com.howtodoinjava.rest.exception.BadRequestException;
+import com.howtodoinjava.rest.exception.ForbiddenException;
+import com.howtodoinjava.rest.exception.NoteNotFoundException;
+import com.howtodoinjava.rest.exception.UnauthorizedException;
 import com.howtodoinjava.rest.model.User;
 import com.howtodoinjava.rest.dao.INoteDAO;
 import com.howtodoinjava.rest.model.Note;
@@ -106,14 +109,13 @@ public class NoteController {
     public ResponseEntity<?> findAll(@RequestHeader(value="Authorization") String comingM) {
         if (!ifAuthen(comingM))
             throw new UnauthorizedException("User Unauthorized");
-
         //will save the notes under the list for a particular user
-        List<Note> notes = noteService.findAllNote(user_name);
-        if(notes == null)
+        List<Note> not = noteService.findAllNote(user_name);
+        if(not == null)
             throw new NoteNotFoundException("Not Found or you dont have access");
-        if(!notes.get(0).getOwner().equals(user_name))
+        if(!not.get(0).getOwner().equals(user_name))
             throw new ForbiddenException("The user can not access the note");
-        return new ResponseEntity<>(notes, HttpStatus.OK);
+        return new ResponseEntity<>(not, HttpStatus.OK);
     }
 
 
@@ -121,40 +123,14 @@ public class NoteController {
     //Update a note for the user
 
     /**
-     * Update a note for a user
+
+     * Get note for a user with the provided id for the user
      * @param comingM: Auth code
      * @param id
      * @return
      */
 
-    @RequestMapping(value = "/note/{id}", produces = "application/json", method = RequestMethod.PUT)
-    public ResponseEntity<?> editNote(@RequestHeader(value="Authorization") String comingM, @RequestBody Note note , @PathVariable("id") String id) {
-
-        //will check the authorization of the user
-        if(!ifAuthen(comingM))
-            throw new UnauthorizedException("User Unauthorized");
-        // will check if the body does not contain something
-        if(note.getContent() == null || note.getTitle() == null)
-            throw new BadRequestException("Title or content should not be empty");
-        // updating the values of id, user_name, note and title from body
-
-
-        Note prevNote=noteService.findNoteById(id);
-        if(prevNote.getContent().contains(note.getContent())){
-
-            return new ResponseEntity<>( "The content already there. Please change the contents", HttpStatus.ALREADY_REPORTED);
-
-        }
-
-        note.setId(id);
-        note.setOwner(user_name);
-        noteService.update(note);
-
-        // return the new note created in database
-        return new ResponseEntity<>(noteService.findNoteById(id), HttpStatus.CREATED);
-    }
-
-//    delete note
+//  delete note
     @RequestMapping(value = "/note/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteNote(@RequestHeader(value = "Authorization") String comingM, @PathVariable("id") String id) {
         if (!ifAuthen(comingM))
@@ -170,5 +146,21 @@ public class NoteController {
         noteService.deleteNote(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    /*@RequestMapping(value = "/note/{id}", produces = "application/json", method = RequestMethod.GET)
+    public ResponseEntity<?> noteUpdate(@RequestHeader(value="Authorization") String comingM, @PathVariable("id") String id) {
+        if (!ifAuthen(comingM))
+            throw new UnauthorizedException("User Unauthorized");
+        Note note = noteService.findNoteById(id);
+        if(note == null)
+            throw new NoteNotFoundException("Not Found");
+        if(!note.getOwner().equals(user_name))
+            throw new ForbiddenException("The user can not access the note");
+        return new ResponseEntity<>(note, HttpStatus.OK);
+    }*/
+
+
+
+
 
 }
