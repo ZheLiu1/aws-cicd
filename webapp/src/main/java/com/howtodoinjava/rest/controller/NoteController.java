@@ -58,6 +58,7 @@ public class NoteController {
         note.setId(uuid.toString());
         note.setCreated_on(date);
         note.setOwner(user_name);
+        note.setLast_updated_on(date);
         noteService.addNote(note);
         return new ResponseEntity<>( note, HttpStatus.CREATED);
     }
@@ -122,11 +123,30 @@ public class NoteController {
     //Update a note for the user
 
     /**
+
      * Get note for a user with the provided id for the user
      * @param comingM: Auth code
      * @param id
      * @return
      */
+
+//  delete note
+    @RequestMapping(value = "/note/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteNote(@RequestHeader(value = "Authorization") String comingM, @PathVariable("id") String id) {
+        if (!ifAuthen(comingM))
+            throw new UnauthorizedException("User Unauthorized");
+        Note note = noteService.findNoteById(id);
+
+        if(note == null)
+            throw new BadRequestException("Note not found");
+
+        else if (!note.getOwner().equals(user_name))
+            throw new BadRequestException("User does not own the note");
+
+        noteService.deleteNote(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     /*@RequestMapping(value = "/note/{id}", produces = "application/json", method = RequestMethod.GET)
     public ResponseEntity<?> noteUpdate(@RequestHeader(value="Authorization") String comingM, @PathVariable("id") String id) {
         if (!ifAuthen(comingM))
@@ -138,6 +158,7 @@ public class NoteController {
             throw new ForbiddenException("The user can not access the note");
         return new ResponseEntity<>(note, HttpStatus.OK);
     }*/
+
 
 
 

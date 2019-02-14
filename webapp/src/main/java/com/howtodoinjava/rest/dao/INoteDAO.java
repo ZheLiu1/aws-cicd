@@ -24,4 +24,5 @@ public interface INoteDAO {
     int deleteNote(String id);
 
     int deleteOwner(String id);
+
 }
