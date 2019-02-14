@@ -97,38 +97,5 @@ public class NoteDaoImpl implements INoteDAO{
     public int deleteOwner(String id) {
         return jdbcTemplate.update("DELETE from owners where id=?",id);
     }
-
-
-    @Override
-    public List<Note> findAllNote(String user){
-        List<Note> list = jdbcTemplate.query("select * from note where owner = ?", new Object[]{user}, new BeanPropertyRowMapper(Note.class));
-        if(list!=null && list.size()>0) {
-        return list;
-        }
-        return null;
-    }
-
-//====================================================================
-    /**
-     * will update title, last updated on and content for the given input
-     * @param account
-     * @return
-     */
-    @Override
-    public int update(Note account) {
-
-        //to get current time for update time
-         java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        String date = df.format(System.currentTimeMillis());
-
-        return jdbcTemplate.update("UPDATE  note SET title=?, content=? , last_updated_on=? WHERE id=?",
-                account.getTitle(), account.getContent(), date, account.getId());
-    }
-
-    @Override
-    public int deleteNote(String id) {
-        return jdbcTemplate.update("DELETE FROM note WHERE id = ?", id);
-    }
 }
 
