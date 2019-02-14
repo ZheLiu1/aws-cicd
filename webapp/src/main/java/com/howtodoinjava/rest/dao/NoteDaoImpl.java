@@ -8,6 +8,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
+/**
+ * Database object class which has methods and usecases to update and check the database components for Note class
+ */
 @Repository
 public class NoteDaoImpl implements INoteDAO{
     @Autowired
@@ -45,12 +49,22 @@ public class NoteDaoImpl implements INoteDAO{
         return null;
     }
 
-
-
+//================================================================================
+    /**
+     * will update title, last updated on and content for the given input
+     * @param account
+     * @return
+     */
     @Override
     public int update(Note account) {
-        return jdbcTemplate.update("UPDATE  user SET user_name=? ,user_password=? WHERE user_id=?",
-                account.getTitle(),account.getContent(),account.getId());
+
+        //to get current time for update time
+         java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        String date = df.format(System.currentTimeMillis());
+
+        return jdbcTemplate.update("UPDATE  note SET title=?, content=? , last_updated_on=? WHERE id=?",
+                account.getTitle(), account.getContent(), date, account.getId());
     }
 
 }

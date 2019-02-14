@@ -58,6 +58,7 @@ public class NoteController {
         note.setId(uuid.toString());
         note.setCreated_on(date);
         note.setOwner(user_name);
+        note.setLast_updated_on("New Note");
         noteService.addNote(note);
         return new ResponseEntity<>( note, HttpStatus.CREATED);
     }
@@ -108,6 +109,7 @@ public class NoteController {
     public ResponseEntity<?> findAll(@RequestHeader(value="Authorization") String comingM) {
         if (!ifAuthen(comingM))
             throw new UnauthorizedException("User Unauthorized");
+
         //will save the notes under the list for a particular user
         List<Note> not = noteService.findAllNote(user_name);
         if(not == null)
@@ -122,23 +124,38 @@ public class NoteController {
     //Update a note for the user
 
     /**
-     * Get note for a user with the provided id for the user
+     * Update a note for a user
      * @param comingM: Auth code
      * @param id
      * @return
      */
-    /*@RequestMapping(value = "/note/{id}", produces = "application/json", method = RequestMethod.GET)
-    public ResponseEntity<?> noteUpdate(@RequestHeader(value="Authorization") String comingM, @PathVariable("id") String id) {
-        if (!ifAuthen(comingM))
-            throw new UnauthorizedException("User Unauthorized");
-        Note note = noteService.findNoteById(id);
-        if(note == null)
-            throw new NoteNotFoundException("Not Found");
-        if(!note.getOwner().equals(user_name))
-            throw new ForbiddenException("The user can not access the note");
-        return new ResponseEntity<>(note, HttpStatus.OK);
-    }*/
 
+    @RequestMapping(value = "/editNote/{id}", produces = "application/json", method = RequestMethod.PUT)
+    public ResponseEntity<?> editNote(@RequestHeader(value="Authorization") String comingM, @RequestBody Note note , @PathVariable("id") String id) {
+
+        //will check the authorization of the user
+        if(!ifAuthen(comingM))
+            throw new UnauthorizedException("User Unauthorized");
+        // will check if the body does not contain something
+        if(note.getContent() == null || note.getTitle() == null)
+            throw new BadRequestException("Title or content should not be empty");
+        // updating the values of id, user_name, note and title from body
+
+
+        Note prevNote=noteService.findNoteById(id);
+        if(prevNote.getContent().contains(note.getContent())){
+
+            return new ResponseEntity<>( "The content already there. Please change the contents", HttpStatus.ALREADY_REPORTED);
+
+        }
+
+        note.setId(id);
+        note.setOwner(user_name);
+        noteService.update(note);
+
+        // return the new note created in database
+        return new ResponseEntity<>( noteService.findNoteById(id), HttpStatus.CREATED);
+    }
 
 
 
