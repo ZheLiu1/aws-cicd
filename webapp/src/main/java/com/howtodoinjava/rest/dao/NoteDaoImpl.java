@@ -97,5 +97,24 @@ public class NoteDaoImpl implements INoteDAO{
     public int deleteOwner(String id) {
         return jdbcTemplate.update("DELETE from owners where id=?",id);
     }
+
+
+    @Override
+    public List<Note> findAllNote(String user){
+        List<Note> list = jdbcTemplate.query("select * from note where owner = ?", new Object[]{user}, new BeanPropertyRowMapper(Note.class));
+        if(list!=null && list.size()>0) {
+        return list;
+        }
+        return null;
+    }
+
+
+
+    @Override
+    public int update(Note account) {
+        return jdbcTemplate.update("UPDATE  user SET user_name=? ,user_password=? WHERE user_id=?",
+                account.getTitle(),account.getContent(),account.getId());
+    }
+
 }
 
