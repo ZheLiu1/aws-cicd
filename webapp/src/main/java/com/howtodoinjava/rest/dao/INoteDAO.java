@@ -1,5 +1,6 @@
 package com.howtodoinjava.rest.dao;
 
+import com.howtodoinjava.rest.model.Attachment;
 import com.howtodoinjava.rest.model.Note;
 
 import java.util.List;
@@ -13,15 +14,23 @@ public interface INoteDAO {
 
     int addOwner(String id, String owner);
 
-    Note findNoteById(String id);
-
-    String findOwnerById(String id);
-
-    List<String> findIdByOwner(String owner);
+    int addAttach(Attachment attachment, String noteId);
 
     int update(Note account);
 
     int deleteNote(String id);
 
     int deleteOwner(String id);
+
+    int deleteAttach(String id);
+
+    Note findNoteById(String id);
+
+    String findOwnerById(String id);
+
+    List<String> findIdByOwner(String owner);
+
+    List<Attachment> findAttachByNoteId(String id);
+
+    Attachment findAttachById(String id);
 }

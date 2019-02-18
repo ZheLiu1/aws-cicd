@@ -115,8 +115,6 @@ public class UserController
         if(isValid(user_name) && policy.check(user_password).toString().equalsIgnoreCase("OK")) {  //done
             User use = new User();
 
-            int len=accountService.findAccountList().size()+16;
-            use.setUser_id(len);
             use.setUser_name(user_name);
             use.setUser_password(bCryptPasswordEncoder.encode(user_password));
 
