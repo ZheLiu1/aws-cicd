@@ -7,7 +7,7 @@ import com.codahale.passpol.BreachDatabase;
 import com.codahale.passpol.PasswordPolicy;
 
 
-import com.howtodoinjava.rest.dao.IUserDAO;
+import com.howtodoinjava.rest.Service.IUserService;
 import com.howtodoinjava.rest.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController
 {
     @Autowired
-    IUserDAO accountService;
+    IUserService accountService;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 

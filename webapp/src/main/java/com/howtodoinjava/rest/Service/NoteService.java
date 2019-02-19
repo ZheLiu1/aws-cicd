@@ -83,16 +83,20 @@ public class NoteService implements INoteService {
 
     @Override
     public int deleteAttach(String id){
-        deleteFile(findAttachById(id).getUrl());
+        Attachment attachment = findAttachById(id);
+        if(attachment != null)
+            deleteFile(attachment.getUrl());
         return noteDAO.deleteAttach(id);
     }
 
     @Override
     public void deleteAllAttach(String id){
         List<Attachment> list = findAttachByNoteId(id);
-        Iterator<Attachment> i = list.iterator();
-        while(i.hasNext()){
-            deleteAttach(i.next().getId());
+        if(list != null) {
+            Iterator<Attachment> i = list.iterator();
+            while (i.hasNext()) {
+                deleteAttach(i.next().getId());
+            }
         }
     }
     @Override

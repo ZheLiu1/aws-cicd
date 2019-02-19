@@ -26,6 +26,8 @@ public interface INoteService {
 
     Note findNoteOnlyById(String noteId);
 
+    Attachment findAttachById(String id);
+
     String findOwnerById(String id);
 
     List<String> findIdByOwner(String owner);
@@ -33,6 +35,4 @@ public interface INoteService {
     List<Note> findNoteList(String owner);
 
     List<Attachment> findAttachByNoteId(String id);
-
-    Attachment findAttachById(String id);
 }

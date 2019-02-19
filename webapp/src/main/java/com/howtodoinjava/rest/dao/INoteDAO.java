@@ -28,9 +28,9 @@ public interface INoteDAO {
 
     String findOwnerById(String id);
 
+    Attachment findAttachById(String id);
+
     List<String> findIdByOwner(String owner);
 
     List<Attachment> findAttachByNoteId(String id);
-
-    Attachment findAttachById(String id);
 }

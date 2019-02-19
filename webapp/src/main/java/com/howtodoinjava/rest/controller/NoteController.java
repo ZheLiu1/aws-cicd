@@ -149,6 +149,7 @@ public class NoteController {
         authen(comingM);
         authrz(comingM, id);
 
+        //TODO check duplicate url, do nothing and return a message or exception
         try{
             writeFile(file);
         }catch(IOException e) {
@@ -156,10 +157,14 @@ public class NoteController {
         }
 
         String fileName = file.getOriginalFilename();
+
         Attachment attachment = new Attachment();
         attachment.setId(UUID.randomUUID().toString());
         attachment.setUrl(PATH + fileName);
+
         Note note = noteService.findNoteOnlyById(id);
+        if(note == null)
+            throw new NotFoundException("note not found");
         noteService.addAttach(attachment, note.getId());
 
         return new ResponseEntity<>(attachment, HttpStatus.OK);
@@ -172,6 +177,8 @@ public class NoteController {
         authen(comingM);
         authrz(comingM, id);
         List<Attachment> list = noteService.findAttachByNoteId(id);
+        if(list == null)
+            throw new NotFoundException("Not found");
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
@@ -190,6 +197,8 @@ public class NoteController {
 
         //check if the attachment belongs to the note
         List<Attachment> list = noteService.findAttachByNoteId(idNotes);
+        if(list == null)
+            throw new NotFoundException("Not found the note");
         Iterator<Attachment> i = list.iterator();
         boolean flag = false;
         while(i.hasNext()){
@@ -203,6 +212,7 @@ public class NoteController {
             throw new BadRequestException("the attachments do not belong to the note");
 
         //replace attachments with the new one
+        //TODO check duplicate url, do nothing and return a message or exception
         noteService.deleteAttach(idAttachments);
         try{
             writeFile(file);
@@ -227,6 +237,10 @@ public class NoteController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    //TODO
+    //private boolean ifUrlDuplicate(String url)
+
     //write file to disk
     private void writeFile(MultipartFile file) throws IOException{
         String fileName = file.getOriginalFilename();
