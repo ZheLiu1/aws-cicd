@@ -4,6 +4,7 @@ import com.howtodoinjava.rest.dao.INoteDAO;
 import com.howtodoinjava.rest.model.Attachment;
 import com.howtodoinjava.rest.model.Note;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -15,6 +16,13 @@ import java.util.List;
 public class NoteService implements INoteService {
     @Autowired
     INoteDAO noteDAO;
+    @Autowired
+    private AmazonS3ClientService amazonS3ClientService;
+    @Value("${aws.s3.audio.bucket}")
+    private String domainName;
+    //used to switch profile between dev/default
+    @Value("${spring.datasource.username}")
+    private String userName;
 
     @Override
     public int addNote(Note note){
@@ -113,11 +121,17 @@ public class NoteService implements INoteService {
     public Attachment findAttachById(String id){
         return noteDAO.findAttachById(id);
     }
+
     //delete file on disk
     private void deleteFile(String url){
-        File file = new File(url);
-        if (file.isFile() && file.exists()) {
-            file.delete();
+        if(userName.equals("csye6225master")) {
+            String fileName = url.replace("https://s3.amazonaws.com/" + domainName + "/", "");
+            this.amazonS3ClientService.deleteFileFromS3Bucket(fileName);
+        }else{
+            File file = new File(url);
+            if (file.isFile() && file.exists()) {
+                file.delete();
+            }
         }
     }
 }

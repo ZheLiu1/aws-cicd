@@ -1,5 +1,6 @@
 package com.howtodoinjava.rest.controller;
 
+import com.howtodoinjava.rest.Service.AmazonS3ClientService;
 import com.howtodoinjava.rest.Service.INoteService;
 import com.howtodoinjava.rest.Service.IUserService;
 import com.howtodoinjava.rest.exception.BadRequestException;
@@ -9,6 +10,7 @@ import com.howtodoinjava.rest.model.Attachment;
 import com.howtodoinjava.rest.model.User;
 import com.howtodoinjava.rest.model.Note;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -36,10 +38,18 @@ public class NoteController {
     private IUserService accountService;
     @Autowired
     private INoteService noteService;
+    @Autowired
+    private AmazonS3ClientService amazonS3ClientService;
     //time format
     private java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     //path of storage
-    private static String PATH = "/home/zhe/Desktop/temp/";
+    @Value("${localPath}")
+    private String PATH;
+    @Value("${aws.s3.audio.bucket}")
+    private String domainName;
+    //used to switch profile between dev/default
+    @Value("${spring.datasource.username}")
+    private String userName;
 
     /**
      * Creating a note for a user
@@ -145,22 +155,22 @@ public class NoteController {
     @RequestMapping(value = "/note/{idNotes}/attachments", produces = "application/json", method = RequestMethod.POST)
     public ResponseEntity<?> attachFile(@RequestHeader(value="Authorization") String comingM,
                                         @PathVariable("idNotes") String id,
-                                        @RequestParam("file") MultipartFile file){
+                                        @RequestParam("file") MultipartFile file)throws Exception
+    {
         authen(comingM);
         authrz(comingM, id);
 
         //TODO check duplicate url, do nothing and return a message or exception
-        try{
             writeFile(file);
-        }catch(IOException e) {
-            e.printStackTrace();
-        }
 
         String fileName = file.getOriginalFilename();
 
         Attachment attachment = new Attachment();
         attachment.setId(UUID.randomUUID().toString());
-        attachment.setUrl(PATH + fileName);
+        if(userName.equals("csye6225master"))
+            attachment.setUrl("https://s3.amazonaws.com/" + domainName + "/" + fileName);
+        else
+            attachment.setUrl(PATH + fileName);
 
         Note note = noteService.findNoteOnlyById(id);
         if(note == null)
@@ -187,7 +197,8 @@ public class NoteController {
     public ResponseEntity<?> updateFile(@RequestHeader(value="Authorization") String comingM,
                                         @PathVariable("idNotes") String idNotes,
                                         @PathVariable("idAttachments") String idAttachments,
-                                        @RequestParam("file") MultipartFile file){
+                                        @RequestParam("file") MultipartFile file)throws Exception
+    {
         authen(comingM);
         authrz(comingM, idNotes);
 
@@ -214,12 +225,12 @@ public class NoteController {
         //replace attachments with the new one
         //TODO check duplicate url, do nothing and return a message or exception
         noteService.deleteAttach(idAttachments);
-        try{
+
             writeFile(file);
-        }catch(IOException e) {
-            e.printStackTrace();
-        }
-        attachment.setUrl(PATH + file.getOriginalFilename());
+        if(userName.equals("csye6225master"))
+            attachment.setUrl("https://s3.amazonaws.com/" + domainName + "/" + file.getOriginalFilename());
+        else
+            attachment.setUrl(PATH + file.getOriginalFilename());
         noteService.addAttach(attachment, idNotes);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -241,12 +252,18 @@ public class NoteController {
     //TODO
     //private boolean ifUrlDuplicate(String url)
 
-    //write file to disk
-    private void writeFile(MultipartFile file) throws IOException{
-        String fileName = file.getOriginalFilename();
-        byte[] bytes = file.getBytes();
-        Path path = Paths.get(PATH , fileName);
-        Files.write(path, bytes);
+
+    //upload to S3 or write file to disk
+    private void writeFile(MultipartFile file)throws IOException{
+        if(userName.equals("csye6225master"))
+            this.amazonS3ClientService.uploadFileToS3Bucket(file, true);
+        else{
+            String fileName = file.getOriginalFilename();
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(PATH , fileName);
+            Files.write(path, bytes);
+        }
+
     }
 
     //user authentication
