@@ -1,11 +1,22 @@
 package com.howtodoinjava.rest.model;
 
+import java.util.List;
+
 public class Note {
     private String id;
     private String content;
     private String title;
     private String created_on;
     private String last_updated_on;
+    private List<Attachment> attachments;
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
 
     public String getId() {
         return id;
