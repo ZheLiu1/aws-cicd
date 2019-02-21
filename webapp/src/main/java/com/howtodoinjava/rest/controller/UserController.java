@@ -7,7 +7,7 @@ import com.codahale.passpol.BreachDatabase;
 import com.codahale.passpol.PasswordPolicy;
 
 
-import com.howtodoinjava.rest.dao.IUserDAO;
+import com.howtodoinjava.rest.Service.IUserService;
 import com.howtodoinjava.rest.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController
 {
     @Autowired
-    IUserDAO accountService;
+    IUserService accountService;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -115,8 +115,6 @@ public class UserController
         if(isValid(user_name) && policy.check(user_password).toString().equalsIgnoreCase("OK")) {  //done
             User use = new User();
 
-            int len=accountService.findAccountList().size()+16;
-            use.setUser_id(len);
             use.setUser_name(user_name);
             use.setUser_password(bCryptPasswordEncoder.encode(user_password));
 
