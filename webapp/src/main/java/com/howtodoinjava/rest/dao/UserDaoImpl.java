@@ -22,12 +22,6 @@ public class UserDaoImpl implements IUserDAO {
     }
 
     @Override
-    public int update(User account) {
-        return jdbcTemplate.update("UPDATE  user SET user_name=? ,user_password=? WHERE user_id=?",
-                account.getUser_name(),account.getUser_password(),account.getUser_id());
-    }
-
-    @Override
     public int delete(int id) {
         return jdbcTemplate.update("DELETE from user where user_id=?",id);
     }
@@ -54,13 +48,4 @@ public class UserDaoImpl implements IUserDAO {
         }
     }
 
-    @Override
-    public List<User> findAccountList() {
-        List<User> list = jdbcTemplate.query("select * from user", new Object[]{}, new BeanPropertyRowMapper(User.class));
-        if(list!=null && list.size()>0){
-            return list;
-        }else{
-            return null;
-        }
-    }
 }
