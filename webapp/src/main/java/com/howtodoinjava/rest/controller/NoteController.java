@@ -159,16 +159,25 @@ public class NoteController {
     {
         authen(comingM);
         authrz(comingM, id);
-
-        //TODO check duplicate url, do nothing and return a message or exception
-            writeFile(file);
-
         String fileName = file.getOriginalFilename();
+        String url = "https://s3.amazonaws.com/" + domainName + "/" + fileName;
+        Attachment temp;
+        //check if exist the same file name
+        if(userName.equals("csye6225master"))
+            temp = noteService.findAttachByUrl(url);
+        else
+            temp = noteService.findAttachByUrl(PATH + fileName);
+        if(temp != null)
+            throw new BadRequestException("This file name has exist");
+
+        writeFile(file);
+
+
 
         Attachment attachment = new Attachment();
         attachment.setId(UUID.randomUUID().toString());
         if(userName.equals("csye6225master"))
-            attachment.setUrl("https://s3.amazonaws.com/" + domainName + "/" + fileName);
+            attachment.setUrl(url);
         else
             attachment.setUrl(PATH + fileName);
 
@@ -223,7 +232,6 @@ public class NoteController {
             throw new BadRequestException("the attachments do not belong to the note");
 
         //replace attachments with the new one
-        //TODO check duplicate url, do nothing and return a message or exception
         noteService.deleteAttach(idAttachments);
 
             writeFile(file);
@@ -248,10 +256,6 @@ public class NoteController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-    //TODO
-    //private boolean ifUrlDuplicate(String url)
-
 
     //upload to S3 or write file to disk
     private void writeFile(MultipartFile file)throws IOException{

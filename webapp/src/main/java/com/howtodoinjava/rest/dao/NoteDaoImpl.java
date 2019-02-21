@@ -128,6 +128,16 @@ public class NoteDaoImpl implements INoteDAO {
         } else
             return null;
     }
+
+    @Override
+    public Attachment findAttachByUrl(String url){
+        List<Attachment> list = jdbcTemplate.query("select * from attachment where url = ?", new Object[]{url}, new BeanPropertyRowMapper(Attachment.class));
+        if (list != null && list.size() > 0) {
+            Attachment account = list.get(0);
+            return account;
+        } else
+            return null;
+    }
 }
 
 

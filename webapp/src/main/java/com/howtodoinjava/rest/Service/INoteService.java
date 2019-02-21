@@ -26,6 +26,8 @@ public interface INoteService {
 
     Note findNoteOnlyById(String noteId);
 
+    Attachment findAttachByUrl(String url);
+
     Attachment findAttachById(String id);
 
     String findOwnerById(String id);

@@ -122,6 +122,11 @@ public class NoteService implements INoteService {
         return noteDAO.findAttachById(id);
     }
 
+    @Override
+    public Attachment findAttachByUrl(String url){
+        return noteDAO.findAttachByUrl(url);
+    }
+
     //delete file on disk
     private void deleteFile(String url){
         if(userName.equals("csye6225master")) {

@@ -30,6 +30,8 @@ public interface INoteDAO {
 
     Attachment findAttachById(String id);
 
+    Attachment findAttachByUrl(String url);
+
     List<String> findIdByOwner(String owner);
 
     List<Attachment> findAttachByNoteId(String id);
