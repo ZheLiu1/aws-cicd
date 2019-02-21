@@ -47,19 +47,6 @@ public class JDBCFunctionTest {
                 user.getUser_name());
     }
 
-
-
-    @Test
-    @Transactional
-    public void testUpdate() {
-        User user = userService.findAccountByName("admin");
-        user.setUser_name("admin_test");
-
-        this.userService.update(user);
-        Assert.assertEquals("Updated User name is admin_test", "admin_test",
-                userService.findAccountByName("admin_test").getUser_name());
-    }
-
     @Test
     @Transactional
     public void testFindId() {
