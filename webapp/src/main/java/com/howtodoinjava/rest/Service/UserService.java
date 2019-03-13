@@ -13,6 +13,10 @@ public class UserService implements IUserService {
     IUserDAO accountDAO;
 
     @Override
+    public void createTables(String sql){
+        accountDAO.createTables(sql);
+    }
+    @Override
     public int add(User account) {
         return accountDAO.add(account);
     }
