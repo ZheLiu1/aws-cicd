@@ -8,7 +8,13 @@ jobs:
       - run:
           name: Install AWS CLI
           command: |
-            pip install awscli
+          sudo yum -y install python
+          curl -O https://bootstrap.pypa.io/get-pip.py
+          python get-pip.py
+          pip –version
+          pip install awscli
+          pip install awscli –upgrade
+          aws --version
       - run:
           name: Run Test Case & Build Artifact
           command: |
