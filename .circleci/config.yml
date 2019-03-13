@@ -9,11 +9,11 @@ jobs:
           name: Install AWS CLI
           command: |
             sudo apt-get install python3
-            curl -O https://bootstrap.pypa.io/get-pip.py
-            python get-pip.py
-            pip –version
-            pip install awscli
-            pip install awscli –upgrade
+            sudo curl -O https://bootstrap.pypa.io/get-pip.py
+            sudo python get-pip.py
+            sudo pip –version
+            sudo pip install awscli
+            sudo pip install awscli –upgrade
             aws --version
       - run:
           name: Run Test Case & Build Artifact
