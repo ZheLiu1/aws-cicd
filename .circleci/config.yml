@@ -12,7 +12,6 @@ jobs:
             sudo curl -O https://bootstrap.pypa.io/get-pip.py
             sudo python get-pip.py
             sudo pip install awscli
-            aws --version
       - run:
           name: Run Test Case & Build Artifact
           command: |
