@@ -11,7 +11,6 @@ jobs:
             sudo apt-get install python3
             sudo curl -O https://bootstrap.pypa.io/get-pip.py
             sudo python get-pip.py
-            sudo pip –version
             sudo pip install awscli
             sudo pip install awscli –upgrade
             aws --version
