@@ -161,18 +161,10 @@ public class NoteController {
         authrz(comingM, id);
         String fileName = file.getOriginalFilename();
         String url = "https://s3.amazonaws.com/" + domainName + "/" + fileName;
-        Attachment temp;
-        //check if exist the same file name
-        if(userName.equals("csye6225master"))
-            temp = noteService.findAttachByUrl(url);
-        else
-            temp = noteService.findAttachByUrl(PATH + fileName);
-        if(temp != null)
-            throw new BadRequestException("This file name has exist");
+
+        checkDuplicate(fileName);
 
         writeFile(file);
-
-
 
         Attachment attachment = new Attachment();
         attachment.setId(UUID.randomUUID().toString());
@@ -232,11 +224,13 @@ public class NoteController {
             throw new BadRequestException("the attachments do not belong to the note");
 
         //replace attachments with the new one
+        String fileName = file.getOriginalFilename();
+        checkDuplicate(fileName);
         noteService.deleteAttach(idAttachments);
 
             writeFile(file);
         if(userName.equals("csye6225master"))
-            attachment.setUrl("https://s3.amazonaws.com/" + domainName + "/" + file.getOriginalFilename());
+            attachment.setUrl("https://s3.amazonaws.com/" + domainName + "/" + fileName);
         else
             attachment.setUrl(PATH + file.getOriginalFilename());
         noteService.addAttach(attachment, idNotes);
@@ -268,6 +262,17 @@ public class NoteController {
             Files.write(path, bytes);
         }
 
+    }
+
+    //check if exist the same file name
+    private void checkDuplicate(String fileName){
+        Attachment temp;
+        if(userName.equals("csye6225master"))
+            temp = noteService.findAttachByUrl("https://s3.amazonaws.com/" + domainName + "/" + fileName);
+        else
+            temp = noteService.findAttachByUrl(PATH + fileName);
+        if(temp != null)
+            throw new BadRequestException("This file name has exist");
     }
 
     //user authentication
