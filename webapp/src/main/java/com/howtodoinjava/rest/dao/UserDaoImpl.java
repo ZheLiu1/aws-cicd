@@ -12,6 +12,10 @@ public class UserDaoImpl implements IUserDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Override
+    public void createTables(String sql){
+        jdbcTemplate.execute(sql);
+    }
     //to add to the account
     @Override
     public int add(User account) {
