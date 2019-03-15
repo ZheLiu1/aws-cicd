@@ -44,8 +44,11 @@ jobs:
       - run:
           name: Upload Artifact to S3
           command: |
-            aws s3 cp "codedeploy_artifact/csye6225-web-app-${CIRCLE_BUILD_NUM}.zip" s3://code-deploy.csye6225-spring2019-liuzhe3.me/
+            DOMAIN_NAME=$(aws route53 list-hosted-zones --query HostedZones[0].Name --output text)
+            DOMAIN=${DOMAIN_NAME%?}
+            aws s3 cp "codedeploy_artifact/csye6225-web-app-${CIRCLE_BUILD_NUM}.zip" s3://code-deploy.$DOMAIN/
       - run:
           name: Make CodeDeploy API call
           command: |
-            aws deploy create-deployment --application-name csye6225-webapp --deployment-config-name CodeDeployDefault.AllAtOnce --region us-east-1 --deployment-group-name csye6225-webapp-deployment --s3-location bucket=code-deploy.csye6225-spring2019-liuzhe3.me,bundleType=zip,key=csye6225-web-app-${CIRCLE_BUILD_NUM}.zip
+            CD_DOMAIN="code-deploy."$DOMAIN
+            aws deploy create-deployment --application-name csye6225-webapp --deployment-config-name CodeDeployDefault.AllAtOnce --region us-east-1 --deployment-group-name csye6225-webapp-deployment --s3-location bucket=$CD_DOMAIN,bundleType=zip,key=csye6225-web-app-${CIRCLE_BUILD_NUM}.zip
