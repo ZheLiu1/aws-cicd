@@ -48,4 +48,6 @@ jobs:
       - run:
           name: Make CodeDeploy API call
           command: |
-            aws deploy create-deployment --application-name csye6225-webapp --deployment-config-name CodeDeployDefault.AllAtOnce --region us-east-1 --deployment-group-name csye6225-webapp-deployment --s3-location bucket=code-deploy.csye6225-spring2019-liuzhe3.me,bundleType=zip,key=csye6225-web-app-${CIRCLE_BUILD_NUM}.zip
+            DOMAIN_NAME=$(aws route53 list-hosted-zones --query HostedZones[0].Name --output text)
+            CD_DOMAIN="code-deploy."${DOMAIN_NAME%?}
+            aws deploy create-deployment --application-name csye6225-webapp --deployment-config-name CodeDeployDefault.AllAtOnce --region us-east-1 --deployment-group-name csye6225-webapp-deployment --s3-location bucket=$CD_DOMAIN,bundleType=zip,key=csye6225-web-app-${CIRCLE_BUILD_NUM}.zip
