@@ -7,7 +7,7 @@ import com.codahale.passpol.BreachDatabase;
 import com.codahale.passpol.PasswordPolicy;
 
 
-import com.howtodoinjava.rest.dao.IUserDAO;
+import com.howtodoinjava.rest.Service.IUserService;
 import com.howtodoinjava.rest.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,9 +17,41 @@ import org.springframework.web.bind.annotation.*;
 public class UserController
 {
     @Autowired
-    IUserDAO accountService;
+    IUserService accountService;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private String sql1 = "CREATE TABLE IF NOT EXISTS user(\n" +
+            "user_id INT UNSIGNED AUTO_INCREMENT,\n" +
+            "user_name VARCHAR(40) NOT NULL,\n" +
+            "user_password VARCHAR(100) NOT NULL,\n" +
+            "PRIMARY KEY ( `user_id` )\n" +
+            ")ENGINE=InnoDB DEFAULT CHARSET=utf8;\n";
+
+    private String sql2 ="CREATE TABLE IF NOT EXISTS note(\n" +
+            "pid INT UNSIGNED AUTO_INCREMENT,\n" +
+            "id VARCHAR(40) NOT NULL,\n" +
+            "content VARCHAR(50) ,\n" +
+            "title VARCHAR(40) ,\n" +
+            "created_on VARCHAR(40) NOT NULL,\n" +
+            "last_updated_on VARCHAR(40) ,\n" +
+            "PRIMARY KEY ( `pid` )\n" +
+            ")ENGINE=InnoDB DEFAULT CHARSET=utf8;\n";
+
+    private String sql3 ="CREATE TABLE IF NOT EXISTS owners(\n" +
+            "pid INT UNSIGNED AUTO_INCREMENT,\n" +
+            "id VARCHAR(40) NOT NULL,\n" +
+            "owner VARCHAR(40) NOT NULL,\n" +
+            "PRIMARY KEY ( `pid` )\n" +
+            ")ENGINE=InnoDB DEFAULT CHARSET=utf8;\n";
+
+
+    private String sql4 ="CREATE TABLE IF NOT EXISTS attachment(\n" +
+            "pid INT UNSIGNED AUTO_INCREMENT,\n" +
+            "id VARCHAR(40) NOT NULL,\n" +
+            "url VARCHAR(150) NOT NULL,\n" +
+            "noteId VARCHAR(40) NOT NULL,\n" +
+            "PRIMARY KEY ( `pid` )\n" +
+            ")ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
 
     @RequestMapping(value = "/", produces = "application/json", method = RequestMethod.GET)
@@ -86,7 +118,10 @@ public class UserController
      */
     @RequestMapping(value = "/user/register", produces = "application/json", method = RequestMethod.POST)
     public HashMap<String,String> addUser(@RequestBody User comingM){
-
+        accountService.createTables(sql1);
+        accountService.createTables(sql2);
+        accountService.createTables(sql3);
+        accountService.createTables(sql4);
         String user_name = comingM.getUser_name();
         String user_password = comingM.getUser_password();
 
@@ -115,8 +150,6 @@ public class UserController
         if(isValid(user_name) && policy.check(user_password).toString().equalsIgnoreCase("OK")) {  //done
             User use = new User();
 
-            int len=accountService.findAccountList().size()+16;
-            use.setUser_id(len);
             use.setUser_name(user_name);
             use.setUser_password(bCryptPasswordEncoder.encode(user_password));
 

@@ -1,12 +1,22 @@
 package com.howtodoinjava.rest.model;
 
+import java.util.List;
+
 public class Note {
     private String id;
     private String content;
     private String title;
     private String created_on;
     private String last_updated_on;
-    private String owner;
+    private List<Attachment> attachments;
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
 
     public String getId() {
         return id;
@@ -46,13 +56,5 @@ public class Note {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
     }
 }
