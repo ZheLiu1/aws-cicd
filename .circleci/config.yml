@@ -50,5 +50,7 @@ jobs:
       - run:
           name: Make CodeDeploy API call
           command: |
-            CD_DOMAIN="code-deploy."$DOMAIN
+            DOMAIN_NAME=$(aws route53 list-hosted-zones --query HostedZones[0].Name --output text)
+            DOMAIN=${DOMAIN_NAME%?}
+            CD_DOMAIN=code-deploy.$DOMAIN
             aws deploy create-deployment --application-name csye6225-webapp --deployment-config-name CodeDeployDefault.AllAtOnce --region us-east-1 --deployment-group-name csye6225-webapp-deployment --s3-location bucket=$CD_DOMAIN,bundleType=zip,key=csye6225-web-app-${CIRCLE_BUILD_NUM}.zip
