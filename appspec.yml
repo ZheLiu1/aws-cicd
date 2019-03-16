@@ -10,3 +10,4 @@ hooks:
     - location: ./afterInstall.sh
       timeout: 180
       runas: centos
+

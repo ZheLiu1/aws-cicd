@@ -11,6 +11,8 @@ else
 fi
 
 RC1=$(aws cloudformation delete-stack --stack-name $StackName)
+RC2=$(aws cloudformation wait stack-delete-complete --stack-name $StackName)
+
 if [ $? -eq 0 ]
 then
 	echo "Stack Deleted"
