@@ -1,4 +1,4 @@
-#!/bin/bash
+!/bin/bash
 echo "Please enter CircleCI Stack Name:"
 read appStackName
 if [ -z "$appStackName" ]
@@ -8,7 +8,7 @@ then
 fi
 
 echo "Validating template"
-RC=$(aws cloudformation validate-template --template-body file://./csye6225-cf-ci-cd.json)
+RC=$(aws cloudformation validate-template --template-body file://./csye6225-cf-circleci.json)
 echo "Template is valid"
 
 if [ $? -eq 0 ]
@@ -29,7 +29,7 @@ CD_DOMAIN="code-deploy."${DOMAIN_NAME%?}
 echo "Fetching user's account id"
 ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
 
-RC=$(aws cloudformation create-stack --stack-name $appStackName --capabilities "CAPABILITY_NAMED_IAM" --template-body file://./csye6225-cf-ci-cd.json --parameters ParameterKey=CDARN,ParameterValue=arn:aws:s3:::$CD_DOMAIN/* ParameterKey=CDAPPNAME,ParameterValue=csye6225-webapp)
+RC=$(aws cloudformation create-stack --stack-name $appStackName --capabilities "CAPABILITY_NAMED_IAM" --template-body file://./csye6225-cf-circleci.json --parameters ParameterKey=CDARN,ParameterValue=arn:aws:s3:::$CD_DOMAIN/* ParameterKey=CDAPPNAME,ParameterValue=csye6225-webapp)
 
 echo "CI stack creation in progress. Please wait"
 aws cloudformation wait stack-create-complete --stack-name $appStackName
