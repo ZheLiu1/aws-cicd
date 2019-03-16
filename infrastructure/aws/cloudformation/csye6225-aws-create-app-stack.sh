@@ -36,6 +36,7 @@ then
 	echo "ImageID is incorrect!"
 	exit 1
 fi
+echo "Imageid being used is: $imageid"
 
 DOMAIN_NAME=$(aws route53 list-hosted-zones --query HostedZones[0].Name --output text)
 
