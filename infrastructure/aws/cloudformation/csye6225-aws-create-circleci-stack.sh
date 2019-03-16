@@ -8,7 +8,7 @@ then
 fi
 
 echo "Validating template"
-RC=$(aws cloudformation validate-template --template-body file://./csye6225-cf-ci-cd.json)
+RC=$(aws cloudformation validate-template --template-body file://./csye6225-cf-circleci.json)
 echo "Template is valid"
 
 if [ $? -eq 0 ]
