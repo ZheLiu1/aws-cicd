@@ -5,7 +5,7 @@ then
 	echo "StackName is incorrect!"
 	exit 1
 fi
-echo "$networkStackName"
+
 
 
 
@@ -16,7 +16,7 @@ then
 	echo "StackName is incorrect!"
 	exit 1
 fi
-echo "$appStackName"
+
 
 
 
@@ -27,7 +27,7 @@ then
 	echo "StackName is incorrect!"
 	exit 1
 fi
-echo "$keyName"
+
 
 ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
 imageid=$(aws ec2 describe-images --owners $ACCOUNT_ID --query 'sort_by(Images, &CreationDate)[-1].[ImageId]' --output 'text')
