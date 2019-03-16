@@ -1,279 +1,880 @@
-
 {
-  "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Application Stack for CSYE 6225 - Spring 2019",
-  "Parameters": {
-    "NetworkStackNameParameter": {
-      "Description": "Network Stack Name",
-      "Type": "String"
-    },
-    "ApplicationStackNameParameter": {
-      "Description": "Application Stack Name",
-      "Type": "String"
-    },
-    "KeyName": {
-      "Description": "EC2 KeyPair to enable SSH access to the instance",
-      "Type": "AWS::EC2::KeyPair::KeyName"
-    },
-    "ImageID": {
-      
-      "Type": "String"
-    },
-    "PublicSubnetKey3": {
-      
-      "Type": "String"
-    },
-    "PublicSubnetKey2": {
-      
-      "Type": "String"
-    },
-    "PublicSubnetKey1": {
-      
-      "Type": "String"
-    },
-    "VpcID": {
-      
-      "Type": "String"
-    }
-  },
-  "Resources": {
-    "EC2Instance": {
-      "Type": "AWS::EC2::Instance",
-      "Properties": {
-        "ImageId": {
-            "Ref": "ImageID"
-          },
-        "InstanceType": "t2.micro",
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Application Stack for CSYE 6225 - Spring 2019",
+    "Parameters": {
+        "NetworkStackNameParameter": {
+            "Description": "Network Stack Name",
+            "Type": "String"
+        },
+        "ApplicationStackNameParameter": {
+            "Description": "Application Stack Name",
+            "Type": "String"
+        },
         "KeyName": {
-            "Ref": "KeyName"
-          },
-        
-        "SubnetId": {
-            "Ref": "PublicSubnetKey1"
-          },
-        "SecurityGroupIds": [
-          {
-            "Ref": "WebServerSecurityGroup"
-          }
-        ],
-        
-        
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": {
-              "Fn::Sub": "csye6225-EC2Instance"
-            }
-          },
-          {
-            "Key": "CodeDeployTag",
-            "Value": "Deploy"
-          }
-        ]
-      }
-    },
-    "WebServerSecurityGroup": {
-      "Type": "AWS::EC2::SecurityGroup",
-      "Properties": {
-        "GroupName": "csye6225-webapp",
-        "GroupDescription": "access for port 80, 22, 443",
-        "VpcId": {
-            "Ref": "VpcID"
-          },
-        "SecurityGroupIngress": [
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "80",
-            "ToPort": "80",
-            "CidrIp": "0.0.0.0/0"
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "22",
-            "ToPort": "22",
-            "CidrIp": "0.0.0.0/0"
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "443",
-            "ToPort": "443",
-            "CidrIp": "0.0.0.0/0"
-          }
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": {
-              "Fn::Sub": "csye6225-WebAppSecurityGroup"
-            }
-          }
-        ]
-      }
-    },
-    "DBServerSecurityGroup": {
-      "Type": "AWS::EC2::SecurityGroup",
-      "Properties": {
-        "GroupName": "csye6225-rds",
-        "GroupDescription": "Allowing traffic to port 3306",
-        "VpcId": {
-            "Ref": "VpcID"
-          },
-        "SecurityGroupIngress": [
-          {
-            "IpProtocol": "tcp",
-            "FromPort": 3306,
-            "ToPort": 3306,
-            "SourceSecurityGroupId": {
-              "Ref": "WebServerSecurityGroup"
-            }
-          }
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": {
-              "Fn::Sub": "csye6225-DBSecurityGroup"
-            }
-          }
-        ]
-      }
-    },
-    "RDSSubnetGroup": {
-      "Type": "AWS::RDS::DBSubnetGroup",
-      "Properties": {
-        "DBSubnetGroupDescription": "Subnet group for RDS Instances",
-        "SubnetIds": [
-          {
-            "Ref": "PublicSubnetKey2"
-          },
-          {
-            "Ref": "PublicSubnetKey3"
-          }
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": {
-              "Fn::Sub": "csye6225-RDSSubnetGroup"
-            }
-          }
-        ]
-      }
-    },
-    "RDSInstance": {
-      "Type": "AWS::RDS::DBInstance",
-      "Properties": {
-        "DBName": "csye6225",
-        "AllocatedStorage": "100",
-        "DBInstanceClass": "db.t2.medium",
-        "Engine": "MySQL",
-        "MasterUsername": "csye6225master",
-        "MasterUserPassword": "csye6225password",
-        "MultiAZ": false,
-        "DBInstanceIdentifier": "csye6225-spring2019",
-        "PubliclyAccessible": true,
-        "Port": "3306",
-        "DBSubnetGroupName": {
-          "Ref": "RDSSubnetGroup"
+            "Description": "EC2 KeyPair to enable SSH access to the instance",
+            "Type": "AWS::EC2::KeyPair::KeyName"
         },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": {
-              "Fn::Sub": "csye6225-RDSInstance"
-            }
-          }
-        ]
-      }
-    },
-    "DynamoDBTable": {
-      "Type": "AWS::DynamoDB::Table",
-      "Properties": {
-        "AttributeDefinitions": [
-          {
-            "AttributeName": "Id",
-            "AttributeType": "S"
-          }
-        ],
-        "KeySchema": [
-          {
-            "AttributeName": "Id",
-            "KeyType": "HASH"
-          }
-        ],
-        "ProvisionedThroughput": {
-          "ReadCapacityUnits": "1",
-          "WriteCapacityUnits": "1"
+        "ImageID": {
+            "Type": "String"
         },
-        "TableName": "csye6225",
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": {
-              "Fn::Sub": "csye6225-DynamoDBTable"
+        "PublicSubnetKey3": {
+            "Type": "String"
+        },
+        "PublicSubnetKey2": {
+            "Type": "String"
+        },
+        "PublicSubnetKey1": {
+            "Type": "String"
+        },
+        "VpcID": {
+            "Type": "String"
+        },
+        "S3UploadBucket": {
+            "Type": "String"
+        },
+        "S3CDBucket": {
+            "Type": "String"
+        }
+    },
+    "Resources": {
+        "EC2Instance": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "ImageId": {
+                    "Ref": "ImageID"
+                },
+                "InstanceType": "t2.micro",
+                "KeyName": {
+                    "Ref": "KeyName"
+                },
+                "SubnetId": {
+                    "Ref": "PublicSubnetKey1"
+                },
+                "SecurityGroupIds": [
+                    {
+                        "Ref": "WebServerSecurityGroup"
+                    }
+                ],
+                "IamInstanceProfile": {
+                    "Ref": "CodeDeployEC2InstanceProfile"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": {
+                            "Fn::Sub": "csye6225-EC2Instance"
+                        }
+                    },
+                    {
+                        "Key": "CodeDeployTag",
+                        "Value": "Deploy"
+                    }
+                ],
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "\n",
+                            [
+                                "#!/bin/bash -xe ",
+                                "sudo service codedeploy-agent start",
+                                "sudo -s",
+                                "echo '#!/bin/bash' >> /home/centos/vars.sh",
+                                "cd /home/centos/",
+                                "chmod +x ./vars.sh",
+                                "echo -n 'java -jar springbootdemo-0.0.1-SNAPSHOT.jar --spring.datasource.username=csye6225master --spring.datasourse.password=csye6225password --spring.profiles.active=dev' >> /home/centos/vars.sh",
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "echo -n ' --spring.datasource.url=jdbc:mysql://",
+                                            {
+                                                "Fn::GetAtt": [
+                                                    "RDSInstance",
+                                                    "Endpoint.Address"
+                                                ]
+                                            },
+                                            ":3306/csye6225' >> /home/centos/vars.sh"
+                                        ]
+                                    ]
+                                },
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "echo ' --aws.s3.audio.bucket=",
+                                            {
+                                                "Ref": "S3UploadBucket"
+                                            },
+                                            "' >> /home/centos/vars.sh"
+                                        ]
+                                    ]
+                                }
+                            ]
+                        ]
+                    }
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "98aa31db-e6f9-4e81-a1e9-edae1d922573"
+                }
             }
-          }
-        ]
-      }
+        },
+        "WebServerSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupName": "csye6225-webapp",
+                "GroupDescription": "access for port 80, 22, 443",
+                "VpcId": {
+                    "Ref": "VpcID"
+                },
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "80",
+                        "ToPort": "80",
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "22",
+                        "ToPort": "22",
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "443",
+                        "ToPort": "443",
+                        "CidrIp": "0.0.0.0/0"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": {
+                            "Fn::Sub": "csye6225-WebAppSecurityGroup"
+                        }
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "388fe87f-7c4e-40d5-8211-0c746147402b"
+                }
+            }
+        },
+        "DBServerSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupName": "csye6225-rds",
+                "GroupDescription": "Allowing traffic to port 3306",
+                "VpcId": {
+                    "Ref": "VpcID"
+                },
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": 3306,
+                        "ToPort": 3306,
+                        "SourceSecurityGroupId": {
+                            "Ref": "WebServerSecurityGroup"
+                        }
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": {
+                            "Fn::Sub": "csye6225-DBSecurityGroup"
+                        }
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "78901633-db6e-4296-99ee-a276cfc26ee9"
+                }
+            }
+        },
+        "RDSSubnetGroup": {
+            "Type": "AWS::RDS::DBSubnetGroup",
+            "Properties": {
+                "DBSubnetGroupDescription": "Subnet group for RDS Instances",
+                "SubnetIds": [
+                    {
+                        "Ref": "PublicSubnetKey2"
+                    },
+                    {
+                        "Ref": "PublicSubnetKey3"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": {
+                            "Fn::Sub": "csye6225-RDSSubnetGroup"
+                        }
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "2e03b58e-cff5-4bd4-a32b-b88cc9652b70"
+                }
+            }
+        },
+        "RDSInstance": {
+            "Type": "AWS::RDS::DBInstance",
+            "Properties": {
+                "DBName": "csye6225",
+                "AllocatedStorage": "100",
+                "DBInstanceClass": "db.t2.medium",
+                "Engine": "MySQL",
+                "MasterUsername": "csye6225master",
+                "MasterUserPassword": "csye6225password",
+                "MultiAZ": false,
+                "DBInstanceIdentifier": "csye6225-spring2019",
+                "PubliclyAccessible": true,
+                "Port": "3306",
+                "DBSubnetGroupName": {
+                    "Ref": "RDSSubnetGroup"
+                },
+                "VPCSecurityGroups": [
+                    {
+                        "Ref": "DBServerSecurityGroup"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": {
+                            "Fn::Sub": "csye6225-RDSInstance"
+                        }
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "2203852e-140b-4a99-bbef-0f98fd7aaa45"
+                }
+            }
+        },
+        "DynamoDBTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "AttributeDefinitions": [
+                    {
+                        "AttributeName": "Id",
+                        "AttributeType": "S"
+                    }
+                ],
+                "KeySchema": [
+                    {
+                        "AttributeName": "Id",
+                        "KeyType": "HASH"
+                    }
+                ],
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": "1",
+                    "WriteCapacityUnits": "1"
+                },
+                "TableName": "csye6225",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": {
+                            "Fn::Sub": "csye6225-DynamoDBTable"
+                        }
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "1438bbb7-29cc-4b09-92f6-b3efd5daeb53"
+                }
+            }
+        },
+        "CodeDeployApplication": {
+            "Type": "AWS::CodeDeploy::Application",
+            "Properties": {
+                "ApplicationName": "csye6225-webapp",
+                "ComputePlatform": "Server"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "79237857-6d0d-4a94-8ad6-1c08de81445c"
+                }
+            }
+        },
+        "CodeDeployDeploymentGroup": {
+            "Type": "AWS::CodeDeploy::DeploymentGroup",
+            "Properties": {
+                "ApplicationName": {
+                    "Ref": "CodeDeployApplication"
+                },
+                "DeploymentGroupName": "csye6225-webapp-deployment",
+                "ServiceRoleArn": {
+                    "Fn::GetAtt": [
+                        "CodeDeployServiceRole",
+                        "Arn"
+                    ]
+                },
+                "DeploymentStyle": {
+                    "DeploymentOption": "WITHOUT_TRAFFIC_CONTROL",
+                    "DeploymentType": "IN_PLACE"
+                },
+                "DeploymentConfigName": "CodeDeployDefault.AllAtOnce",
+                "AutoRollbackConfiguration": {
+                    "Enabled": "true",
+                    "Events": [
+                        "DEPLOYMENT_FAILURE"
+                    ]
+                },
+                "Ec2TagFilters": [
+                    {
+                        "Key": "CodeDeployTag",
+                        "Type": "KEY_AND_VALUE",
+                        "Value": "Deploy"
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "76379d7c-fab0-4b35-b8f0-4b0f7817c340"
+                }
+            }
+        },
+        "CodeDeployServiceRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "RoleName": "CodeDeployServiceRole",
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "codedeploy.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Path": "/",
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "370040df-d3f2-419f-9db8-8f9c29efde5a"
+                }
+            }
+        },
+        "CodeDeployEC2S3": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "CodeDeploy-EC2-S3",
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:ListBucketByTags",
+                                "s3:GetLifecycleConfiguration",
+                                "s3:GetBucketTagging",
+                                "s3:GetInventoryConfiguration",
+                                "s3:GetObjectVersionTagging",
+                                "s3:ListBucketVersions",
+                                "s3:GetBucketLogging",
+                                "s3:ListBucket",
+                                "s3:GetAccelerateConfiguration",
+                                "s3:GetBucketPolicy",
+                                "s3:GetObjectVersionTorrent",
+                                "s3:GetObjectAcl",
+                                "s3:GetEncryptionConfiguration",
+                                "s3:GetBucketRequestPayment",
+                                "s3:GetObjectVersionAcl",
+                                "s3:GetObjectTagging",
+                                "s3:GetMetricsConfiguration",
+                                "s3:GetBucketPublicAccessBlock",
+                                "s3:GetBucketPolicyStatus",
+                                "s3:ListBucketMultipartUploads",
+                                "s3:GetBucketWebsite",
+                                "s3:GetBucketVersioning",
+                                "s3:GetBucketAcl",
+                                "s3:GetBucketNotification",
+                                "s3:GetReplicationConfiguration",
+                                "s3:ListMultipartUploadParts",
+                                "s3:GetObject",
+                                "s3:GetObjectTorrent",
+                                "s3:GetBucketCORS",
+                                "s3:GetAnalyticsConfiguration",
+                                "s3:GetObjectVersionForReplication",
+                                "s3:GetBucketLocation",
+                                "s3:GetObjectVersion"
+                            ],
+                            "Resource": [
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "S3CDBucket"
+                                            }
+                                        ]
+                                    ]
+                                },
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "S3CDBucket"
+                                            },
+                                            "/*"
+                                        ]
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:GetAccountPublicAccessBlock",
+                                "s3:ListAllMyBuckets",
+                                "s3:HeadBucket"
+                            ],
+                            "Resource": "*"
+                        }
+                    ]
+                },
+                "Roles": [
+                    {
+                        "Ref": "CodeDeployEC2ServiceRole"
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "c85674c8-9355-4617-a6f2-76a8f442a8e7"
+                }
+            }
+        },
+        "CodeDeployEC2InstanceProfile": {
+            "Type": "AWS::IAM::InstanceProfile",
+            "Properties": {
+                "Path": "/",
+                "Roles": [
+                    {
+                        "Ref": "CodeDeployEC2ServiceRole"
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "aeadf9d5-cb46-49e3-aa43-31b290333bca"
+                }
+            }
+        },
+        "CodeDeployEC2ServiceRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "RoleName": "CodeDeployEC2ServiceRole",
+                "Path": "/",
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "ec2.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "908b31df-07e1-4714-8688-f039a57b3cdc"
+                }
+            }
+        },
+        "UploadS3": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "UploadS3",
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:PutObject",
+                                "s3:DeleteObject",
+                                "s3:PutObjectAcl"
+                            ],
+                            "Resource": [
+                                
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "S3UploadBucket"
+                                            },
+                                            "/*"
+                                        ]
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "Roles": [
+                    {
+                        "Ref": "CodeDeployEC2ServiceRole"
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "ecfdc397-0cb8-4142-9fea-178c09886c3d"
+                }
+            }
+        }
+    },
+    "Outputs": {
+        "EC2Instance": {
+            "Description": "The EC2 Instance for Web Server",
+            "Value": {
+                "Ref": "EC2Instance"
+            },
+            "Export": {
+                "Name": {
+                    "Fn::Sub": "EC2InstanceID"
+                }
+            }
+        },
+        "WebServerSecurityGroup": {
+            "Description": "The security group id for the Web Server",
+            "Value": {
+                "Ref": "WebServerSecurityGroup"
+            },
+            "Export": {
+                "Name": {
+                    "Fn::Sub": "WebServerSecurityGroupID"
+                }
+            }
+        },
+        "DBServerSecurityGroup": {
+            "Description": "The security group id for the RDS Server",
+            "Value": {
+                "Ref": "DBServerSecurityGroup"
+            },
+            "Export": {
+                "Name": {
+                    "Fn::Sub": "DBServerSecurityGroupID"
+                }
+            }
+        },
+        "RDSInstance": {
+            "Description": "The RDS Instance for Backend Database",
+            "Value": {
+                "Ref": "RDSInstance"
+            },
+            "Export": {
+                "Name": {
+                    "Fn::Sub": "RDSInstanceID"
+                }
+            }
+        },
+        "DynamoDBTable": {
+            "Description": "The DynamoDBTableId",
+            "Value": {
+                "Ref": "DynamoDBTable"
+            },
+            "Export": {
+                "Name": {
+                    "Fn::Sub": "DynamoDBTableID"
+                }
+            }
+        }
+    },
+    "Metadata": {
+        "AWS::CloudFormation::Designer": {
+            "1438bbb7-29cc-4b09-92f6-b3efd5daeb53": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 360,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "2e03b58e-cff5-4bd4-a32b-b88cc9652b70": {
+                "size": {
+                    "width": 240,
+                    "height": 240
+                },
+                "position": {
+                    "x": 60,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": [
+                    "2203852e-140b-4a99-bbef-0f98fd7aaa45"
+                ]
+            },
+            "388fe87f-7c4e-40d5-8211-0c746147402b": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 360,
+                    "y": 210
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "78901633-db6e-4296-99ee-a276cfc26ee9": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 360,
+                    "y": 330
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "2203852e-140b-4a99-bbef-0f98fd7aaa45": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 90,
+                    "y": 150
+                },
+                "z": 2,
+                "parent": "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                "embeds": [],
+                "isassociatedwith": [
+                    "78901633-db6e-4296-99ee-a276cfc26ee9"
+                ],
+                "iscontainedinside": [
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70"
+                ]
+            },
+            "98aa31db-e6f9-4e81-a1e9-edae1d922573": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 50,
+                    "y": 400
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "388fe87f-7c4e-40d5-8211-0c746147402b"
+                ]
+            },
+            "79237857-6d0d-4a94-8ad6-1c08de81445c": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 590,
+                    "y": 50
+                },
+                "z": 0,
+                "embeds": []
+            },
+            "76379d7c-fab0-4b35-b8f0-4b0f7817c340": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 500,
+                    "y": 140
+                },
+                "z": 0,
+                "embeds": [],
+                "isassociatedwith": [
+                    "79237857-6d0d-4a94-8ad6-1c08de81445c"
+                ]
+            },
+            "370040df-d3f2-419f-9db8-8f9c29efde5a": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 590,
+                    "y": 230
+                },
+                "z": 0,
+                "embeds": []
+            },
+            "c85674c8-9355-4617-a6f2-76a8f442a8e7": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 780,
+                    "y": 100
+                },
+                "z": 0,
+                "embeds": [],
+                "isassociatedwith": [
+                    "58bdd5a8-c773-4785-b23b-2c4a82fe5faf",
+                    "908b31df-07e1-4714-8688-f039a57b3cdc"
+                ]
+            },
+            "aeadf9d5-cb46-49e3-aa43-31b290333bca": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 780,
+                    "y": 390
+                },
+                "z": 0,
+                "embeds": [],
+                "isassociatedwith": [
+                    "58bdd5a8-c773-4785-b23b-2c4a82fe5faf",
+                    "908b31df-07e1-4714-8688-f039a57b3cdc"
+                ]
+            },
+            "908b31df-07e1-4714-8688-f039a57b3cdc": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 780,
+                    "y": 210
+                },
+                "z": 0,
+                "embeds": []
+            },
+            "ecfdc397-0cb8-4142-9fea-178c09886c3d": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 890,
+                    "y": 120
+                },
+                "z": 0,
+                "embeds": [],
+                "isassociatedwith": [
+                    "908b31df-07e1-4714-8688-f039a57b3cdc"
+                ]
+            }
+        }
     }
-    
-  },
-  "Outputs": {
-    "EC2Instance": {
-      "Description": "The EC2 Instance for Web Server",
-      "Value": {
-        "Ref": "EC2Instance"
-      },
-      "Export": {
-        "Name": {
-          "Fn::Sub": "EC2InstanceID"
-        }
-      }
-    },
-    "WebServerSecurityGroup": {
-      "Description": "The security group id for the Web Server",
-      "Value": {
-        "Ref": "WebServerSecurityGroup"
-      },
-      "Export": {
-        "Name": {
-          "Fn::Sub": "WebServerSecurityGroupID"
-        }
-      }
-    },
-    "DBServerSecurityGroup": {
-      "Description": "The security group id for the RDS Server",
-      "Value": {
-        "Ref": "DBServerSecurityGroup"
-      },
-      "Export": {
-        "Name": {
-          "Fn::Sub": "DBServerSecurityGroupID"
-        }
-      }
-    },
-    "RDSInstance": {
-      "Description": "The RDS Instance for Backend Database",
-      "Value": {
-        "Ref": "RDSInstance"
-      },
-      "Export": {
-        "Name": {
-          "Fn::Sub": "RDSInstanceID"
-        }
-      }
-    },
-    "DynamoDBTable": {
-      "Description": "The DynamoDBTableId",
-      "Value": {
-        "Ref": "DynamoDBTable"
-      },
-      "Export": {
-        "Name": {
-          "Fn::Sub": "DynamoDBTableID"
-        }
-      }
-    }
-    
-  }
 }
