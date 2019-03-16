@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 echo "Please enter CircleCI Stack Name:"
 read appStackName
 if [ -z "$appStackName" ]
