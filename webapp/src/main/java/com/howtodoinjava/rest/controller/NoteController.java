@@ -182,7 +182,7 @@ public class NoteController {
     }
 
     //Get list of files attached to the note
-    @RequestMapping(value = "/note/{idNotes}/attachments", produces = "application/json", method = RequestMethod.GET)
+    @RequestMapping(value = "/notesonia/{idNotes}/attachments", produces = "application/json", method = RequestMethod.GET)
     public ResponseEntity<?> attachAllFile(@RequestHeader(value="Authorization") String comingM,
                                         @PathVariable("idNotes") String id){
         authen(comingM);
