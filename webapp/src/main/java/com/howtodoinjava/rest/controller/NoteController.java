@@ -103,7 +103,7 @@ public class NoteController {
      * @param comingM : value from the user base
      * @return
      */
-    @RequestMapping(value = "/note", produces = "application/json", method = RequestMethod.GET)
+    @RequestMapping(value = "/notezheliu", produces = "application/json", method = RequestMethod.GET)
     public ResponseEntity<?> findAll(@RequestHeader(value="Authorization") String comingM) {
         authen(comingM);
         String[] userInfo = UserController.decodeBase64(comingM);
