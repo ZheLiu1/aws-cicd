@@ -6,12 +6,12 @@ files:
     destination: /home/centos
 
 hooks:
-  AfterInstall:
-    - location: ./afterInstall.sh
-      timeout: 300
-      runas: root
   BeforeInstall:
     - location: ./beforeInstall.sh
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: ./afterInstall.sh
       timeout: 300
       runas: root
 
