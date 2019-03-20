@@ -1,5 +1,4 @@
 #!/bin/bash
-sudo rm -r vars.sh
 sudo rm -r springbootdemo-0.0.1-SNAPSHOT.jar
 pid = $(ps aux | grep "java -jar" | grep "root")
 kill -9 $pid
