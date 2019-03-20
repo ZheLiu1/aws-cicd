@@ -555,6 +555,51 @@
                     "id": "ecfdc397-0cb8-4142-9fea-178c09886c3d"
                 }
             }
+        },
+        "circleciUploadToS3": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:PutObject"
+                            ],
+                            "Resource": [
+                                
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "S3CDBucket"
+                                            },
+                                            "/*"
+                                        ]
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": "route53:*",
+                          "Resource": "*"
+                      }
+                    ]
+                },
+                "PolicyName": "circleciUploadToS3",
+                "Users": [
+                    "circleci"
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "e8948f9f-7b61-47f3-8cfa-1baca9ed6f6b"
+                }
+            }
         }
     },
     "Outputs": {
