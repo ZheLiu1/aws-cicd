@@ -57,7 +57,7 @@ public class NoteController {
      * @param note
      * @return
      */
-    @RequestMapping(value = "/notezheliu", produces = "application/json", method = RequestMethod.POST)
+    @RequestMapping(value = "/note", produces = "application/json", method = RequestMethod.POST)
     public ResponseEntity<?> addNote(@RequestHeader(value="Authorization") String comingM,
                                      @RequestBody Note note)
     {
