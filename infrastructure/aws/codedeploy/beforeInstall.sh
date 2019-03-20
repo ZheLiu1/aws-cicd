@@ -1,6 +1,6 @@
 #!/bin/bash
-myFile="~/springbootdemo-0.0.1-SNAPSHOT.jar"
-if [ -f "$myFile" ]
+cd ~
+if [ -f "springbootdemo-0.0.1-SNAPSHOT.jar" ]
 then
 sudo rm -rf /springbootdemo-0.0.1-SNAPSHOT.jar 
 sudo rm -rf ~/springbootdemo-0.0.1-SNAPSHOT.jar 
