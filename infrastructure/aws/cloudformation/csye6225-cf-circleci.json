@@ -59,37 +59,6 @@
               }
           }
       },
-      "circleciUploadToS3": {
-          "Type": "AWS::IAM::Policy",
-          "Properties": {
-              "PolicyDocument": {
-                  "Version": "2012-10-17",
-                  "Statement": [
-                      {
-                          "Effect": "Allow",
-                          "Action": [
-                              "s3:PutObject"
-                          ],
-                          "Resource": "arn:aws:s3:::*/*"
-                      },
-                      {
-                        "Effect": "Allow",
-                        "Action": "route53:*",
-                        "Resource": "*"
-                    }
-                  ]
-              },
-              "PolicyName": "circleciUploadToS3",
-              "Users": [
-                  "circleci"
-              ]
-          },
-          "Metadata": {
-              "AWS::CloudFormation::Designer": {
-                  "id": "e8948f9f-7b61-47f3-8cfa-1baca9ed6f6b"
-              }
-          }
-      },
       "circleciCodeDeploy": {
           "Type": "AWS::IAM::Policy",
           "Properties": {
