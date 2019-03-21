@@ -504,7 +504,10 @@
                             ]
                         }
                     ]
-                }
+                },
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+                ]
             },
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
@@ -527,7 +530,6 @@
                                 "s3:PutObjectAcl"
                             ],
                             "Resource": [
-                                
                                 {
                                     "Fn::Join": [
                                         "",
@@ -553,6 +555,50 @@
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
                     "id": "ecfdc397-0cb8-4142-9fea-178c09886c3d"
+                }
+            }
+        },
+        "circleciUploadToS3": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:PutObject"
+                            ],
+                            "Resource": [
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "S3CDBucket"
+                                            },
+                                            "/*"
+                                        ]
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": "route53:*",
+                            "Resource": "*"
+                        }
+                    ]
+                },
+                "PolicyName": "circleciUploadToS3",
+                "Users": [
+                    "circleci"
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "e8948f9f-7b61-47f3-8cfa-1baca9ed6f6b"
                 }
             }
         }
@@ -759,6 +805,10 @@
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70"
                 ]
             },
@@ -768,8 +818,8 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 50,
-                    "y": 400
+                    "x": 60,
+                    "y": 390
                 },
                 "z": 1,
                 "embeds": [],
@@ -783,10 +833,10 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 590,
-                    "y": 50
+                    "x": 600,
+                    "y": 60
                 },
-                "z": 0,
+                "z": 1,
                 "embeds": []
             },
             "76379d7c-fab0-4b35-b8f0-4b0f7817c340": {
@@ -795,10 +845,10 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 500,
-                    "y": 140
+                    "x": 510,
+                    "y": 150
                 },
-                "z": 0,
+                "z": 1,
                 "embeds": [],
                 "isassociatedwith": [
                     "79237857-6d0d-4a94-8ad6-1c08de81445c"
@@ -810,10 +860,10 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 590,
-                    "y": 230
+                    "x": 600,
+                    "y": 240
                 },
-                "z": 0,
+                "z": 1,
                 "embeds": []
             },
             "c85674c8-9355-4617-a6f2-76a8f442a8e7": {
@@ -823,9 +873,9 @@
                 },
                 "position": {
                     "x": 780,
-                    "y": 100
+                    "y": 90
                 },
-                "z": 0,
+                "z": 1,
                 "embeds": [],
                 "isassociatedwith": [
                     "58bdd5a8-c773-4785-b23b-2c4a82fe5faf",
@@ -841,7 +891,7 @@
                     "x": 780,
                     "y": 390
                 },
-                "z": 0,
+                "z": 1,
                 "embeds": [],
                 "isassociatedwith": [
                     "58bdd5a8-c773-4785-b23b-2c4a82fe5faf",
@@ -857,7 +907,7 @@
                     "x": 780,
                     "y": 210
                 },
-                "z": 0,
+                "z": 1,
                 "embeds": []
             },
             "ecfdc397-0cb8-4142-9fea-178c09886c3d": {
@@ -866,14 +916,26 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 890,
+                    "x": 900,
                     "y": 120
                 },
-                "z": 0,
+                "z": 1,
                 "embeds": [],
                 "isassociatedwith": [
                     "908b31df-07e1-4714-8688-f039a57b3cdc"
                 ]
+            },
+            "e8948f9f-7b61-47f3-8cfa-1baca9ed6f6b": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 990,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": []
             }
         }
     }
