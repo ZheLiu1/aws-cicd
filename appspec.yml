@@ -4,10 +4,16 @@ os: linux
 files:
   - source: ./webapp/target/springbootdemo-0.0.1-SNAPSHOT.jar
     destination: /home/centos
+  - source: ./cloudwatch-config.json
+    destination: /home/centos
 
 hooks:
+  BeforeInstall:
+    - location: ./beforeInstall.sh
+      timeout: 300
+      runas: centos
   AfterInstall:
     - location: ./afterInstall.sh
-      timeout: 180
+      timeout: 300
       runas: centos
 

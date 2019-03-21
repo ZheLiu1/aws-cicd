@@ -9,6 +9,7 @@ import com.howtodoinjava.rest.exception.UnauthorizedException;
 import com.howtodoinjava.rest.model.Attachment;
 import com.howtodoinjava.rest.model.User;
 import com.howtodoinjava.rest.model.Note;
+import com.timgroup.statsd.StatsDClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.slf4j.*;
 
 
 import java.io.IOException;
@@ -50,6 +52,10 @@ public class NoteController {
     //used to switch profile between dev/default
     @Value("${spring.datasource.username}")
     private String userName;
+    @Autowired
+    private StatsDClient statsDClient;
+
+    private final static Logger logger = LoggerFactory.getLogger(NoteController.class);
 
     /**
      * Creating a note for a user
@@ -61,10 +67,13 @@ public class NoteController {
     public ResponseEntity<?> addNote(@RequestHeader(value="Authorization") String comingM,
                                      @RequestBody Note note)
     {
+        statsDClient.incrementCounter("endpoint.create.note.post");
         authen(comingM);
 
-        if(note.getContent() == null || note.getTitle() == null)
+        if(note.getContent() == null || note.getTitle() == null) {
+            logger.error("Title or content should not be empty");
             throw new BadRequestException("Title or content should not be empty");
+        }
 
         String date = df.format(System.currentTimeMillis());
         //random generate a UUID for a note
@@ -78,6 +87,7 @@ public class NoteController {
         String user_name = userInfo[0];
         noteService.addOwner(uuid, user_name);
 
+        logger.info("create a note success");
         return new ResponseEntity<>( note, HttpStatus.CREATED);
     }
 
@@ -89,12 +99,16 @@ public class NoteController {
      */
     @RequestMapping(value = "/note/{id}", produces = "application/json", method = RequestMethod.GET)
     public ResponseEntity<?> addNote(@RequestHeader(value="Authorization") String comingM, @PathVariable("id") String id) {
+        statsDClient.incrementCounter("endpoint.retrieve.note.get");
         authen(comingM);
         authrz(comingM, id);
         List<Attachment> attachment = noteService.findAttachByNoteId(id);
         Note note = noteService.findNoteById(id, attachment);
-        if(note == null)
+        if(note == null) {
+            logger.error("the note required not exist");
             throw new NotFoundException("Not Found");
+        }
+        logger.info("info of note returned");
         return new ResponseEntity<>(note, HttpStatus.OK);
     }
 
@@ -105,13 +119,17 @@ public class NoteController {
      */
     @RequestMapping(value = "/note", produces = "application/json", method = RequestMethod.GET)
     public ResponseEntity<?> findAll(@RequestHeader(value="Authorization") String comingM) {
+        statsDClient.incrementCounter("endpoint.retrieve.all.notes.get");
         authen(comingM);
         String[] userInfo = UserController.decodeBase64(comingM);
         String user_name = userInfo[0];
         //will save the notes under the list for a particular user
         List<Note> notes = noteService.findNoteList(user_name);
-        if(notes == null || notes.size() == 0)
+        if(notes == null || notes.size() == 0) {
+            logger.error("No notes found");
             throw new NotFoundException("No notes found");
+        }
+        logger.info("all info of notes returned");
         return new ResponseEntity<>(notes, HttpStatus.OK);
     }
 
@@ -123,24 +141,27 @@ public class NoteController {
      */
     @RequestMapping(value = "/note/{id}", produces = "application/json", method = RequestMethod.PUT)
     public ResponseEntity<?> editNote(@RequestHeader(value="Authorization") String comingM, @RequestBody Note note , @PathVariable("id") String id) {
-
+        statsDClient.incrementCounter("endpoint.update.note.put");
         //will check the authorization of the user
         authen(comingM);
         // will check if the body does not contain something
-        if(note.getContent() == null || note.getTitle() == null)
-            throw new BadRequestException("Title or content should not be empty");
+        if(note.getContent() == null || note.getTitle() == null) {
+            logger.error("Title or content is empty");
+            throw new BadRequestException("Title or content is empty");
+        }
 
         authrz(comingM, id);
         note.setId(id);
         note.setLast_updated_on(df.format(System.currentTimeMillis()));
         noteService.updateNote(note);
-
+        logger.info("note update success");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     //delete a note
     @RequestMapping(value = "/note/{id}", produces = "application/json", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteNote(@RequestHeader(value="Authorization") String comingM, @PathVariable("id") String id) {
+        statsDClient.incrementCounter("endpoint.delete.note.delete");
         authen(comingM);
         authrz(comingM,id);
         //delete
@@ -148,6 +169,7 @@ public class NoteController {
         noteService.deleteOwner(id);
         noteService.deleteAllAttach(id);
 
+        logger.info("note & all attachemnts of it deleted");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -157,6 +179,7 @@ public class NoteController {
                                         @PathVariable("idNotes") String id,
                                         @RequestParam("file") MultipartFile file)throws Exception
     {
+        statsDClient.incrementCounter("endpoint.upload.attachments.post");
         authen(comingM);
         authrz(comingM, id);
         String fileName = file.getOriginalFilename();
@@ -174,10 +197,13 @@ public class NoteController {
             attachment.setUrl(PATH + fileName);
 
         Note note = noteService.findNoteOnlyById(id);
-        if(note == null)
+        if(note == null) {
+            logger.error("note not found");
             throw new NotFoundException("note not found");
+        }
         noteService.addAttach(attachment, note.getId());
 
+        logger.info("attach success");
         return new ResponseEntity<>(attachment, HttpStatus.OK);
     }
 
@@ -185,11 +211,15 @@ public class NoteController {
     @RequestMapping(value = "/notesonia/{idNotes}/attachments", produces = "application/json", method = RequestMethod.GET)
     public ResponseEntity<?> attachAllFile(@RequestHeader(value="Authorization") String comingM,
                                         @PathVariable("idNotes") String id){
+        statsDClient.incrementCounter("endpoint.retrieve.all.attachments.get");
         authen(comingM);
         authrz(comingM, id);
         List<Attachment> list = noteService.findAttachByNoteId(id);
-        if(list == null)
+        if(list == null) {
+            logger.error("this user don't have any note");
             throw new NotFoundException("Not found");
+        }
+        logger.info("all info of attachments returned");
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
@@ -200,17 +230,22 @@ public class NoteController {
                                         @PathVariable("idAttachments") String idAttachments,
                                         @RequestParam("file") MultipartFile file)throws Exception
     {
+        statsDClient.incrementCounter("endpoint.update.attachment.put");
         authen(comingM);
         authrz(comingM, idNotes);
 
         Attachment attachment = noteService.findAttachById(idAttachments);
-        if(attachment == null)
+        if(attachment == null) {
+            logger.error("the attachment not found");
             throw new NotFoundException("the attachment not found");
+        }
 
         //check if the attachment belongs to the note
         List<Attachment> list = noteService.findAttachByNoteId(idNotes);
-        if(list == null)
+        if(list == null) {
+            logger.error("Not found the note");
             throw new NotFoundException("Not found the note");
+        }
         Iterator<Attachment> i = list.iterator();
         boolean flag = false;
         while(i.hasNext()){
@@ -220,8 +255,10 @@ public class NoteController {
                 break;
             }
         }
-        if(!flag)
+        if(!flag) {
+            logger.error("the provided attachments do not belong to the note");
             throw new BadRequestException("the attachments do not belong to the note");
+        }
 
         //replace attachments with the new one
         String fileName = file.getOriginalFilename();
@@ -235,6 +272,7 @@ public class NoteController {
             attachment.setUrl(PATH + file.getOriginalFilename());
         noteService.addAttach(attachment, idNotes);
 
+        logger.info("update success");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
@@ -244,10 +282,12 @@ public class NoteController {
     public ResponseEntity<?> deleteFile(@RequestHeader(value="Authorization") String comingM,
                                         @PathVariable("idNotes") String idNotes,
                                         @PathVariable("idAttachments") String idAttachments){
+        statsDClient.incrementCounter("endpoint.delete.attachment.delete");
         authen(comingM);
         authrz(comingM, idNotes);
         noteService.deleteAttach(idAttachments);
 
+        logger.info("delete success");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -261,6 +301,7 @@ public class NoteController {
             Path path = Paths.get(PATH , fileName);
             Files.write(path, bytes);
         }
+        logger.info("upload attachment success");
 
     }
 
@@ -271,8 +312,11 @@ public class NoteController {
             temp = noteService.findAttachByUrl("https://s3.amazonaws.com/" + domainName + "/" + fileName);
         else
             temp = noteService.findAttachByUrl(PATH + fileName);
-        if(temp != null)
+        if(temp != null) {
+            logger.error("This file name has exist, try a new one");
             throw new BadRequestException("This file name has exist");
+        }
+        logger.info("check file name success");
     }
 
     //user authentication
@@ -282,21 +326,30 @@ public class NoteController {
         String user_password = userInfo[1];
 
         User user = accountService.findAccountByName(user_name);
-        if(user != null && bCryptPasswordEncoder.matches(user_password, user.getUser_password()) )
-            return ;
-        else
+        if(user != null && bCryptPasswordEncoder.matches(user_password, user.getUser_password()) ) {
+            logger.info("user authentication success");
+            return;
+        }
+        else {
+            logger.error("User Unauthorized");
             throw new UnauthorizedException("User Unauthorized");
+        }
     }
 
     //user authorization
     private void authrz(String comingM, String id){
         String owner = noteService.findOwnerById(id);
-        if(owner == null)
+        if(owner == null) {
+            logger.error("Not Found the note");
             throw new NotFoundException("Not Found the note");
+        }
         String[] userInfo = UserController.decodeBase64(comingM);
         String user_name = userInfo[0];
-        if(!owner.equals(user_name))
+        if(!owner.equals(user_name)) {
+            logger.error("User Unauthorized");
             throw new UnauthorizedException("User Unauthorized");
-        //  throw new ForbiddenException("The user can not access the note");
+            //  throw new ForbiddenException("The user can not access the note");
+        }
+        logger.info("user authorization success");
     }
 }
