@@ -9,6 +9,9 @@ import com.codahale.passpol.PasswordPolicy;
 
 import com.howtodoinjava.rest.Service.IUserService;
 import com.howtodoinjava.rest.model.User;
+import com.timgroup.statsd.StatsDClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +23,8 @@ public class UserController
     IUserService accountService;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private StatsDClient statsDClient;
     private String sql1 = "CREATE TABLE IF NOT EXISTS user(\n" +
             "user_id INT UNSIGNED AUTO_INCREMENT,\n" +
             "user_name VARCHAR(40) NOT NULL,\n" +
@@ -52,10 +57,12 @@ public class UserController
             "noteId VARCHAR(40) NOT NULL,\n" +
             "PRIMARY KEY ( `pid` )\n" +
             ")ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+    private final static Logger logger = LoggerFactory.getLogger(NoteController.class);
 
 
     @RequestMapping(value = "/", produces = "application/json", method = RequestMethod.GET)
     public HashMap<String,String> httpGet(@RequestHeader(value="Authorization") String comingM){
+        statsDClient.incrementCounter("endpoint.get.timestamp.get");
         String[] userInfo = decodeBase64(comingM);
         String user_name = userInfo[0];
         String user_password = userInfo[1];
@@ -66,8 +73,11 @@ public class UserController
         if(verify(user_password,user)){
             java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             m.put("Current Time", df.format(System.currentTimeMillis()));
-        }else
+        }else {
+            logger.error("user authentication failed");
             m.put("Error", "You are not logged in!");
+        }
+        logger.info("timestamp returned");
         return m;
 
     }
@@ -118,6 +128,7 @@ public class UserController
      */
     @RequestMapping(value = "/user/register", produces = "application/json", method = RequestMethod.POST)
     public HashMap<String,String> addUser(@RequestBody User comingM){
+        statsDClient.incrementCounter("endpoint.create.user.post");
         accountService.createTables(sql1);
         accountService.createTables(sql2);
         accountService.createTables(sql3);
@@ -131,6 +142,7 @@ public class UserController
         // 1:: Duplicate username done
         User user= accountService.findAccountByName(user_name);
         if(user!=null && user.getUser_name().equalsIgnoreCase(user_name)){
+            logger.error("the user name already exists");
             m.put("Error", "Duplicate Value enter again!!");
             return m;
         }
@@ -141,7 +153,7 @@ public class UserController
         //System.out.print("The message is:" +policy.check(user_password).toString());
 
         if(!policy.check(user_password).toString().equalsIgnoreCase("OK")){
-
+            logger.error("The Password is not Strong.");
             m.put("Error", "The Password is not Strong.Please change it according to NIST!");
             return m;
         }
@@ -154,10 +166,12 @@ public class UserController
             use.setUser_password(bCryptPasswordEncoder.encode(user_password));
 
             accountService.add(use);
+            logger.info("Perfect!! KO. You have been registered.");
             m.put("Success", "Perfect!! KO. You have been registered.");
             return m;
         }
         //4: check for the pattern of the Email address
+        logger.error("Wrong Email Pattern. Enter Again!!");
         m.put("Error", "Wrong Email Pattern. Enter Again!!");
         return m;
     }
