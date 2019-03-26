@@ -637,17 +637,6 @@
         "SNSReset": {
             "Type": "AWS::SNS::Topic",
             "Properties": {
-                "Subscription": [
-                    {
-                        "Endpoint": {
-                            "Fn::GetAtt": [
-                                "LambdaReset",
-                                "Arn"
-                            ]
-                        },
-                        "Protocol": "lambda"
-                    }
-                ],
                 "TopicName": "SNSReset"
             },
             "Metadata": {
@@ -659,7 +648,14 @@
         "LambdaReset": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
+                "FunctionName": "LambdaReset",
                 "Handler": "SNSHandler.handleRequest",
+                "Code": {
+                    "S3Bucket": {
+                        "Ref": "S3CDBucket"
+                    },
+                    "S3Key": "csye6225-spring2019-lambda-1.0-SNAPSHOT.jar"
+                },
                 "Environment": {
                     "Variables": {
                         "FROM": {
@@ -722,6 +718,30 @@
                     "id": "1914005c-8151-417b-87da-463322e97555"
                 }
             }
+        },
+        "SNSsub": {
+            "Type": "AWS::SNS::Subscription",
+            "Properties": {
+                "TopicArn": {
+                    "Ref": "SNSReset"
+                },
+                "Endpoint": {
+                    "Fn::GetAtt": [
+                        "LambdaReset",
+                        "Arn"
+                    ]
+                },
+                "Protocol": "lambda"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "8a887d1e-39f4-42f3-ba33-49b6277b84f9"
+                }
+            },
+            "DependsOn": [
+                "LambdaReset",
+                "SNSReset"
+            ]
         }
     },
     "Outputs": {
@@ -789,8 +809,8 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 1140,
-                    "y": 410
+                    "x": 1110,
+                    "y": 320
                 },
                 "z": 1,
                 "embeds": []
@@ -849,6 +869,21 @@
                     "78901633-db6e-4296-99ee-a276cfc26ee9"
                 ],
                 "iscontainedinside": [
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
@@ -1112,7 +1147,7 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 920,
+                    "x": 860,
                     "y": 410
                 },
                 "z": 0,
@@ -1124,11 +1159,48 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 1030,
-                    "y": 180
+                    "x": 1170,
+                    "y": 410
                 },
                 "z": 0,
                 "embeds": []
+            },
+            "8a887d1e-39f4-42f3-ba33-49b6277b84f9": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 950,
+                    "y": 270
+                },
+                "z": 0,
+                "embeds": [],
+                "isassociatedwith": [
+                    "a28ef1ea-d8f2-4f34-b7eb-d3feffa7d341"
+                ],
+                "dependson": [
+                    "e88a31bc-47d4-4113-9fdc-9f6fd09f49ab",
+                    "a28ef1ea-d8f2-4f34-b7eb-d3feffa7d341"
+                ]
+            },
+            "ec2f5efc-c282-4925-ba07-67dccd556d98": {
+                "source": {
+                    "id": "8a887d1e-39f4-42f3-ba33-49b6277b84f9"
+                },
+                "target": {
+                    "id": "e88a31bc-47d4-4113-9fdc-9f6fd09f49ab"
+                },
+                "z": 11
+            },
+            "8e2be67e-7fbc-423b-9911-50f6fb50f933": {
+                "source": {
+                    "id": "8a887d1e-39f4-42f3-ba33-49b6277b84f9"
+                },
+                "target": {
+                    "id": "a28ef1ea-d8f2-4f34-b7eb-d3feffa7d341"
+                },
+                "z": 12
             }
         }
     }
