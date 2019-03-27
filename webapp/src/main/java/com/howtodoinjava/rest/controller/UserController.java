@@ -7,12 +7,16 @@ import com.codahale.passpol.BreachDatabase;
 import com.codahale.passpol.PasswordPolicy;
 
 
+import com.howtodoinjava.rest.Service.AmazonSNSClientService;
 import com.howtodoinjava.rest.Service.IUserService;
+import com.howtodoinjava.rest.model.SNSmessage;
 import com.howtodoinjava.rest.model.User;
 import com.timgroup.statsd.StatsDClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +29,9 @@ public class UserController
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private StatsDClient statsDClient;
+    @Autowired
+    private AmazonSNSClientService amazonSNSClientService;
+
     private String sql1 = "CREATE TABLE IF NOT EXISTS user(\n" +
             "user_id INT UNSIGNED AUTO_INCREMENT,\n" +
             "user_name VARCHAR(40) NOT NULL,\n" +
@@ -175,4 +182,14 @@ public class UserController
         m.put("Error", "Wrong Email Pattern. Enter Again!!");
         return m;
     }
+
+    @RequestMapping(value = "/reset", produces = "application/json", method = RequestMethod.POST)
+    public ResponseEntity<?> reset(@RequestBody SNSmessage comingM) {
+        statsDClient.incrementCounter("endpoint.reset.user.post");
+        String email = comingM.getEmail();
+        amazonSNSClientService.publish(email,"SNSReset");
+        logger.info("pass reset info to SNS success");
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
 }
