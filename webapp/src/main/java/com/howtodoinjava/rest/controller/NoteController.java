@@ -117,7 +117,7 @@ public class NoteController {
      * @param comingM : value from the user base
      * @return
      */
-    @RequestMapping(value = "/noteshardul", produces = "application/json", method = RequestMethod.GET)
+    @RequestMapping(value = "/note", produces = "application/json", method = RequestMethod.GET)
     public ResponseEntity<?> findAll(@RequestHeader(value="Authorization") String comingM) {
         statsDClient.incrementCounter("endpoint.retrieve.all.notes.get");
         authen(comingM);
