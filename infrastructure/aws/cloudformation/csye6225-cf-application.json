@@ -649,7 +649,7 @@
             "Type": "AWS::Lambda::Function",
             "Properties": {
                 "FunctionName": "LambdaReset",
-                "Handler": "SNSHandler.handleRequest",
+                "Handler": "SNSHandler::handleRequest",
                 "Code": {
                     "S3Bucket": {
                         "Ref": "S3CDBucket"
@@ -739,6 +739,31 @@
                 }
             },
             "DependsOn": [
+                "SNSReset",
+                "LambdaReset"
+            ]
+        },
+        "LambdaPermission": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+                "Action": "lambda:InvokeFunction",
+                "Principal": "sns.amazonaws.com",
+                "SourceArn": {
+                    "Ref": "SNSReset"
+                },
+                "FunctionName": {
+                    "Fn::GetAtt": [
+                        "LambdaReset",
+                        "Arn"
+                    ]
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "a5078c7c-6043-480b-b03a-228dd1009bcd"
+                }
+            },
+            "DependsOn": [
                 "LambdaReset",
                 "SNSReset"
             ]
@@ -809,8 +834,8 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 1110,
-                    "y": 320
+                    "x": 1260,
+                    "y": 260
                 },
                 "z": 1,
                 "embeds": []
@@ -1001,6 +1026,36 @@
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70"
                 ]
             },
@@ -1010,8 +1065,8 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 100,
-                    "y": 390
+                    "x": 170,
+                    "y": 640
                 },
                 "z": 1,
                 "embeds": [],
@@ -1135,8 +1190,8 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 1030,
-                    "y": 410
+                    "x": 1120,
+                    "y": 520
                 },
                 "z": 0,
                 "embeds": []
@@ -1147,8 +1202,8 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 860,
-                    "y": 410
+                    "x": 890,
+                    "y": 480
                 },
                 "z": 0,
                 "embeds": []
@@ -1159,8 +1214,8 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 1170,
-                    "y": 410
+                    "x": 1380,
+                    "y": 510
                 },
                 "z": 0,
                 "embeds": []
@@ -1171,36 +1226,29 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 950,
-                    "y": 270
+                    "x": 1020,
+                    "y": 360
                 },
                 "z": 0,
                 "embeds": [],
-                "isassociatedwith": [
-                    "a28ef1ea-d8f2-4f34-b7eb-d3feffa7d341"
-                ],
                 "dependson": [
-                    "e88a31bc-47d4-4113-9fdc-9f6fd09f49ab",
                     "a28ef1ea-d8f2-4f34-b7eb-d3feffa7d341"
                 ]
             },
-            "ec2f5efc-c282-4925-ba07-67dccd556d98": {
-                "source": {
-                    "id": "8a887d1e-39f4-42f3-ba33-49b6277b84f9"
+            "a5078c7c-6043-480b-b03a-228dd1009bcd": {
+                "size": {
+                    "width": 60,
+                    "height": 60
                 },
-                "target": {
-                    "id": "e88a31bc-47d4-4113-9fdc-9f6fd09f49ab"
+                "position": {
+                    "x": 980,
+                    "y": 650
                 },
-                "z": 11
-            },
-            "8e2be67e-7fbc-423b-9911-50f6fb50f933": {
-                "source": {
-                    "id": "8a887d1e-39f4-42f3-ba33-49b6277b84f9"
-                },
-                "target": {
-                    "id": "a28ef1ea-d8f2-4f34-b7eb-d3feffa7d341"
-                },
-                "z": 12
+                "z": 0,
+                "embeds": [],
+                "dependson": [
+                    "e88a31bc-47d4-4113-9fdc-9f6fd09f49ab"
+                ]
             }
         }
     }
