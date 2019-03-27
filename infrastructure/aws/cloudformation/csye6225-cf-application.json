@@ -34,6 +34,9 @@
         },
         "S3CDBucket": {
             "Type": "String"
+        },
+        "Domain": {
+            "Type": "String"
         }
     },
     "Resources": {
@@ -94,6 +97,22 @@
                                                 ]
                                             },
                                             ":3306/csye6225' >> /home/centos/vars.sh"
+                                        ]
+                                    ]
+                                },
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "echo -n ' --aws.sns.topic.ARN=arn:aws:sns:",
+                                            {
+                                                "Ref": "AWS::Region"
+                                            },
+                                            ":",
+                                            {
+                                                "Ref": "AWS::AccountId"
+                                            },
+                                            ":SNSReset' >> /home/centos/vars.sh"
                                         ]
                                     ]
                                 },
@@ -266,12 +285,20 @@
                     {
                         "AttributeName": "Id",
                         "AttributeType": "S"
+                    },
+                    {
+                        "AttributeName": "Email",
+                        "AttributeType": "S"
                     }
                 ],
                 "KeySchema": [
                     {
                         "AttributeName": "Id",
                         "KeyType": "HASH"
+                    },
+                    {
+                        "AttributeName": "Email",
+                        "KeyType": "RANGE"
                     }
                 ],
                 "ProvisionedThroughput": {
@@ -279,6 +306,10 @@
                     "WriteCapacityUnits": "1"
                 },
                 "TableName": "csye6225",
+                "TimeToLiveSpecification": {
+                    "AttributeName": "ExpireTime",
+                    "Enabled": "TRUE"
+                },
                 "Tags": [
                     {
                         "Key": "Name",
@@ -506,7 +537,8 @@
                     ]
                 },
                 "ManagedPolicyArns": [
-                    "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+                    "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
+                    "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
                 ]
             },
             "Metadata": {
@@ -601,6 +633,140 @@
                     "id": "e8948f9f-7b61-47f3-8cfa-1baca9ed6f6b"
                 }
             }
+        },
+        "SNSReset": {
+            "Type": "AWS::SNS::Topic",
+            "Properties": {
+                "TopicName": "SNSReset"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "a28ef1ea-d8f2-4f34-b7eb-d3feffa7d341"
+                }
+            }
+        },
+        "LambdaReset": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "FunctionName": "LambdaReset",
+                "Handler": "SNSHandler::handleRequest",
+                "Code": {
+                    "S3Bucket": {
+                        "Ref": "S3CDBucket"
+                    },
+                    "S3Key": "csye6225-spring2019-lambda-1.0-SNAPSHOT.jar"
+                },
+                "Environment": {
+                    "Variables": {
+                        "FROM": {
+                            "Ref": "Domain"
+                        },
+                        "ec2": {
+                            "Fn::GetAtt": [
+                                "EC2Instance",
+                                "PublicDnsName"
+                            ]
+                        },
+                        "timeToLive": "20"
+                    }
+                },
+                "Role": {
+                    "Fn::GetAtt": [
+                        "IAMLambdaRole",
+                        "Arn"
+                    ]
+                },
+                "Runtime": "java8",
+                "Timeout": 300,
+                "MemorySize": 256
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "e88a31bc-47d4-4113-9fdc-9f6fd09f49ab"
+                }
+            }
+        },
+        "IAMLambdaRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "RoleName": "IAMLambdaRole",
+                "Path": "/",
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "lambda.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/AmazonSESFullAccess",
+                    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccesswithDataPipeline",
+                    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "1914005c-8151-417b-87da-463322e97555"
+                }
+            }
+        },
+        "SNSsub": {
+            "Type": "AWS::SNS::Subscription",
+            "Properties": {
+                "TopicArn": {
+                    "Ref": "SNSReset"
+                },
+                "Endpoint": {
+                    "Fn::GetAtt": [
+                        "LambdaReset",
+                        "Arn"
+                    ]
+                },
+                "Protocol": "lambda"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "8a887d1e-39f4-42f3-ba33-49b6277b84f9"
+                }
+            },
+            "DependsOn": [
+                "SNSReset",
+                "LambdaReset"
+            ]
+        },
+        "LambdaPermission": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+                "Action": "lambda:InvokeFunction",
+                "Principal": "sns.amazonaws.com",
+                "SourceArn": {
+                    "Ref": "SNSReset"
+                },
+                "FunctionName": {
+                    "Fn::GetAtt": [
+                        "LambdaReset",
+                        "Arn"
+                    ]
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "a5078c7c-6043-480b-b03a-228dd1009bcd"
+                }
+            },
+            "DependsOn": [
+                "LambdaReset",
+                "SNSReset"
+            ]
         }
     },
     "Outputs": {
@@ -668,8 +834,8 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 360,
-                    "y": 90
+                    "x": 1260,
+                    "y": 260
                 },
                 "z": 1,
                 "embeds": []
@@ -694,8 +860,8 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 360,
-                    "y": 210
+                    "x": 380,
+                    "y": 120
                 },
                 "z": 1,
                 "embeds": []
@@ -706,8 +872,8 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 360,
-                    "y": 330
+                    "x": 380,
+                    "y": 340
                 },
                 "z": 1,
                 "embeds": []
@@ -718,8 +884,8 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 90,
-                    "y": 150
+                    "x": 170,
+                    "y": 210
                 },
                 "z": 2,
                 "parent": "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
@@ -728,6 +894,87 @@
                     "78901633-db6e-4296-99ee-a276cfc26ee9"
                 ],
                 "iscontainedinside": [
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
@@ -818,8 +1065,8 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 60,
-                    "y": 390
+                    "x": 170,
+                    "y": 640
                 },
                 "z": 1,
                 "embeds": [],
@@ -931,11 +1178,77 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 990,
-                    "y": 90
+                    "x": 1030,
+                    "y": 80
                 },
                 "z": 1,
                 "embeds": []
+            },
+            "e88a31bc-47d4-4113-9fdc-9f6fd09f49ab": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1120,
+                    "y": 520
+                },
+                "z": 0,
+                "embeds": []
+            },
+            "a28ef1ea-d8f2-4f34-b7eb-d3feffa7d341": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 890,
+                    "y": 480
+                },
+                "z": 0,
+                "embeds": []
+            },
+            "1914005c-8151-417b-87da-463322e97555": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1380,
+                    "y": 510
+                },
+                "z": 0,
+                "embeds": []
+            },
+            "8a887d1e-39f4-42f3-ba33-49b6277b84f9": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1020,
+                    "y": 360
+                },
+                "z": 0,
+                "embeds": [],
+                "dependson": [
+                    "a28ef1ea-d8f2-4f34-b7eb-d3feffa7d341"
+                ]
+            },
+            "a5078c7c-6043-480b-b03a-228dd1009bcd": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 980,
+                    "y": 650
+                },
+                "z": 0,
+                "embeds": [],
+                "dependson": [
+                    "e88a31bc-47d4-4113-9fdc-9f6fd09f49ab"
+                ]
             }
         }
     }

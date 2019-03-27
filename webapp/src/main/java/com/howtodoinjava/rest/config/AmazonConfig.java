@@ -1,8 +1,6 @@
 package com.howtodoinjava.rest.config;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
@@ -11,13 +9,22 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class AmazonS3Config {
+public class AmazonConfig {
 
     @Value("${aws.region}")
     private String awsRegion;
 
     @Value("${aws.s3.audio.bucket}")
     private String awsS3AudioBucket;
+
+    @Value("${aws.sns.topic.ARN}")
+    private String snsTopicInterviewStatusARN;
+
+
+    @Bean(name = "snsTopicInterviewStatusARN")
+    public String snsTopcARN() {
+        return this.snsTopicInterviewStatusARN;
+    }
 
     @Bean(name = "awsRegion")
     public Region getAWSPollyRegion() {
