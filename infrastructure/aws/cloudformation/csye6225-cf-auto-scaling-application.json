@@ -959,15 +959,15 @@
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
                 "GroupName": "csye6225-LB",
-                "GroupDescription": "access for port 80 from anywhere",
+                "GroupDescription": "access for port 443 (https default) from anywhere",
                 "VpcId": {
                     "Ref": "VpcID"
                 },
                 "SecurityGroupIngress": [
                     {
                         "IpProtocol": "tcp",
-                        "FromPort": "80",
-                        "ToPort": "80",
+                        "FromPort": "443",
+                        "ToPort": "443",
                         "CidrIp": "0.0.0.0/0"
                     }
                 ]
@@ -1085,8 +1085,8 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 360,
-                    "y": 90
+                    "x": -140,
+                    "y": 690
                 },
                 "z": 1,
                 "embeds": []
@@ -1370,6 +1370,8 @@
                     "78901633-db6e-4296-99ee-a276cfc26ee9"
                 ],
                 "iscontainedinside": [
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
