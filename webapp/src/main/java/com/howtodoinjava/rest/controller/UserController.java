@@ -9,6 +9,7 @@ import com.codahale.passpol.PasswordPolicy;
 
 import com.howtodoinjava.rest.Service.AmazonSNSClientService;
 import com.howtodoinjava.rest.Service.IUserService;
+import com.howtodoinjava.rest.exception.BadRequestException;
 import com.howtodoinjava.rest.model.SNSmessage;
 import com.howtodoinjava.rest.model.User;
 import com.timgroup.statsd.StatsDClient;
@@ -187,6 +188,11 @@ public class UserController
     public ResponseEntity<?> reset(@RequestBody SNSmessage comingM) {
         statsDClient.incrementCounter("endpoint.reset.user.post");
         String email = comingM.getEmail();
+        String userName = comingM.getUserName();
+        if(accountService.findAccountByName(userName) == null) {
+            logger.error("User has not registered, can not reset password");
+            throw new BadRequestException("User has not registered, can not reset password");
+        }
         amazonSNSClientService.publish(email,"SNSReset");
         logger.info("pass reset info to SNS success");
         return new ResponseEntity<>(HttpStatus.CREATED);
