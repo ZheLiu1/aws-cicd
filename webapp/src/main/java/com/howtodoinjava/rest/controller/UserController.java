@@ -9,6 +9,7 @@ import com.codahale.passpol.PasswordPolicy;
 
 import com.howtodoinjava.rest.Service.AmazonSNSClientService;
 import com.howtodoinjava.rest.Service.IUserService;
+import com.howtodoinjava.rest.exception.BadRequestException;
 import com.howtodoinjava.rest.model.SNSmessage;
 import com.howtodoinjava.rest.model.User;
 import com.timgroup.statsd.StatsDClient;
@@ -32,38 +33,6 @@ public class UserController
     @Autowired
     private AmazonSNSClientService amazonSNSClientService;
 
-    private String sql1 = "CREATE TABLE IF NOT EXISTS user(\n" +
-            "user_id INT UNSIGNED AUTO_INCREMENT,\n" +
-            "user_name VARCHAR(40) NOT NULL,\n" +
-            "user_password VARCHAR(100) NOT NULL,\n" +
-            "PRIMARY KEY ( `user_id` )\n" +
-            ")ENGINE=InnoDB DEFAULT CHARSET=utf8;\n";
-
-    private String sql2 ="CREATE TABLE IF NOT EXISTS note(\n" +
-            "pid INT UNSIGNED AUTO_INCREMENT,\n" +
-            "id VARCHAR(40) NOT NULL,\n" +
-            "content VARCHAR(50) ,\n" +
-            "title VARCHAR(40) ,\n" +
-            "created_on VARCHAR(40) NOT NULL,\n" +
-            "last_updated_on VARCHAR(40) ,\n" +
-            "PRIMARY KEY ( `pid` )\n" +
-            ")ENGINE=InnoDB DEFAULT CHARSET=utf8;\n";
-
-    private String sql3 ="CREATE TABLE IF NOT EXISTS owners(\n" +
-            "pid INT UNSIGNED AUTO_INCREMENT,\n" +
-            "id VARCHAR(40) NOT NULL,\n" +
-            "owner VARCHAR(40) NOT NULL,\n" +
-            "PRIMARY KEY ( `pid` )\n" +
-            ")ENGINE=InnoDB DEFAULT CHARSET=utf8;\n";
-
-
-    private String sql4 ="CREATE TABLE IF NOT EXISTS attachment(\n" +
-            "pid INT UNSIGNED AUTO_INCREMENT,\n" +
-            "id VARCHAR(40) NOT NULL,\n" +
-            "url VARCHAR(150) NOT NULL,\n" +
-            "noteId VARCHAR(40) NOT NULL,\n" +
-            "PRIMARY KEY ( `pid` )\n" +
-            ")ENGINE=InnoDB DEFAULT CHARSET=utf8;";
     private final static Logger logger = LoggerFactory.getLogger(NoteController.class);
 
 
@@ -136,10 +105,6 @@ public class UserController
     @RequestMapping(value = "/user/register", produces = "application/json", method = RequestMethod.POST)
     public HashMap<String,String> addUser(@RequestBody User comingM){
         statsDClient.incrementCounter("endpoint.create.user.post");
-        accountService.createTables(sql1);
-        accountService.createTables(sql2);
-        accountService.createTables(sql3);
-        accountService.createTables(sql4);
         String user_name = comingM.getUser_name();
         String user_password = comingM.getUser_password();
 
@@ -187,6 +152,11 @@ public class UserController
     public ResponseEntity<?> reset(@RequestBody SNSmessage comingM) {
         statsDClient.incrementCounter("endpoint.reset.user.post");
         String email = comingM.getEmail();
+        String userName = comingM.getUserName();
+        if(accountService.findAccountByName(userName) == null) {
+            logger.error("User has not registered, can not reset password");
+            throw new BadRequestException("User has not registered, can not reset password");
+        }
         amazonSNSClientService.publish(email,"SNSReset");
         logger.info("pass reset info to SNS success");
         return new ResponseEntity<>(HttpStatus.CREATED);

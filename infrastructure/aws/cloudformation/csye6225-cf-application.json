@@ -661,12 +661,6 @@
                         "FROM": {
                             "Ref": "Domain"
                         },
-                        "ec2": {
-                            "Fn::GetAtt": [
-                                "EC2Instance",
-                                "PublicDnsName"
-                            ]
-                        },
                         "timeToLive": "20"
                     }
                 },
@@ -894,6 +888,8 @@
                     "78901633-db6e-4296-99ee-a276cfc26ee9"
                 ],
                 "iscontainedinside": [
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
                     "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
