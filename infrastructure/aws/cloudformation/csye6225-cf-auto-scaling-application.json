@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "AWS WAF Basic OWASP Example Rule Set",
+    "Description": "Application Stack for CSYE6225",
     "Parameters": {
         "NetworkStackNameParameter": {
             "Description": "Network Stack Name",
@@ -208,6 +208,1113 @@
                 "csrfExpectedSize": {
                     "default": "Token Size"
                 }
+            }
+        },
+        "AWS::CloudFormation::Designer": {
+            "da80931f-bd6d-4a5b-a8cb-aa1df35d01a5": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 360,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "a6204b71-dee6-4d80-a3f9-c19562fd2b9d": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 360,
+                    "y": 210
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "da80931f-bd6d-4a5b-a8cb-aa1df35d01a5"
+                ]
+            },
+            "3397aaba-35d9-406a-81ae-247e7ec8060b": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 360,
+                    "y": 330
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "161434a6-6b19-4347-aee2-8e8f89edd24f": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 60,
+                    "y": 390
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "346ce274-6cc7-4d17-b8fe-735207ce9f17": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 180,
+                    "y": 390
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "1b8d4d1a-a3d7-4e42-9dca-95a8aae00eb3": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 480,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "346ce274-6cc7-4d17-b8fe-735207ce9f17"
+                ]
+            },
+            "756988d9-a264-4226-9208-10be616ca979": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 480,
+                    "y": 210
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "3ff95f6c-f4aa-4cc1-a977-e830e7ff177d": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 480,
+                    "y": 330
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "7391a19a-be13-442f-beeb-d17b439cce4a": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 300,
+                    "y": 450
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "2f0bd676-3f4d-45c3-9b73-312436e08416": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 420,
+                    "y": 450
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "0203efb8-0b45-4c34-bf29-f18d6f92d2ad": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 540,
+                    "y": 450
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "14b55ae1-cdec-4eac-abcd-eb900a248c0e": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 60,
+                    "y": 510
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "7391a19a-be13-442f-beeb-d17b439cce4a",
+                    "0203efb8-0b45-4c34-bf29-f18d6f92d2ad"
+                ]
+            },
+            "44d8b0e1-c5bc-4247-8efa-30005af35691": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 180,
+                    "y": 510
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "6dfd967c-870d-45f4-b027-2622e025bc90": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 300,
+                    "y": 570
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "48ce54ea-e507-407c-ab74-39d93f716061": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 420,
+                    "y": 570
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "6fa7ebbe-9e54-4249-873a-e43ec72d9275": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 540,
+                    "y": 570
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "48ce54ea-e507-407c-ab74-39d93f716061"
+                ]
+            },
+            "aea99dd6-97d5-42df-a4e0-9e94de92485a": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 600,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "235054b3-99cf-468c-a227-4f1fe0773b43": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 600,
+                    "y": 210
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "b8ad925e-e972-4215-8ff8-f7e20ca765c6": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 600,
+                    "y": 330
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "4502d546-8948-490c-9291-470540e4d3e8": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 660,
+                    "y": 450
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "8fcdb0db-501a-4e8c-924b-e80c1b8ac849": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 660,
+                    "y": 570
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "422743cb-47fa-421c-a59b-4a845d4e2ff4": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 60,
+                    "y": 630
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "8fcdb0db-501a-4e8c-924b-e80c1b8ac849",
+                    "b8ad925e-e972-4215-8ff8-f7e20ca765c6"
+                ]
+            },
+            "be92c255-8d67-44d5-acf1-9d64226f9235": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 180,
+                    "y": 630
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "655821ea-6dfc-4a68-bd37-52acaab07968": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 720,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "5d36b19e-1817-4edf-9964-80ecae53cae4": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 720,
+                    "y": 210
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "337679ee-801b-45c2-be04-173d80315c36": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 720,
+                    "y": 330
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "4c9c1a5e-3021-4f61-b415-c16d1ddfba47": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 300,
+                    "y": 690
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "5fdfeb99-32f1-4fca-b339-422f4766ce12": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 420,
+                    "y": 690
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "5d36b19e-1817-4edf-9964-80ecae53cae4",
+                    "4c9c1a5e-3021-4f61-b415-c16d1ddfba47"
+                ]
+            },
+            "ba148479-6b59-4a75-9fa5-f7ddc060978b": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 540,
+                    "y": 690
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "26770ce2-1075-49c4-8157-97507fc57eb8": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 660,
+                    "y": 690
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "f24b84fa-3da3-4a1b-ac9f-6f6a48e3032c": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 60,
+                    "y": 750
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "0ddc44bd-8908-466d-a537-027a753764e2": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 180,
+                    "y": 750
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "f24b84fa-3da3-4a1b-ac9f-6f6a48e3032c"
+                ]
+            },
+            "159928af-45b5-4fcd-a351-7715ef54a32a": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 840,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "80510bb8-46a3-4bf7-8d76-bf652c7ae967": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 840,
+                    "y": 210
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "40fafa4d-591f-4540-9956-9958348b3522": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 840,
+                    "y": 330
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "cc90a2f6-21c3-4de6-9c53-d6025cf83afb": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 780,
+                    "y": 450
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "40fafa4d-591f-4540-9956-9958348b3522"
+                ]
+            },
+            "9680a338-99bf-47e9-a840-4ae1147f82f3": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 780,
+                    "y": 570
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "82175c95-3c41-4d0f-b96e-c216a160016e": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 780,
+                    "y": 690
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "75f3d336-f767-45f1-8b9b-b756fa18beb9": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 300,
+                    "y": 810
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "597ba104-f344-40f9-ad4d-3004ed39cdec": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 420,
+                    "y": 810
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "75f3d336-f767-45f1-8b9b-b756fa18beb9"
+                ]
+            },
+            "6345eeed-8df1-4381-888d-e4f0f40af56e": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 540,
+                    "y": 810
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "68f64c5b-8f55-4958-a6be-c97cdba9670e": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 660,
+                    "y": 810
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "f4755dd5-be77-4bd1-a92b-b8cd5c70a182": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 780,
+                    "y": 810
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "f26b9194-d16c-450e-833b-0b3061a491ec": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 900,
+                    "y": 450
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "f4755dd5-be77-4bd1-a92b-b8cd5c70a182"
+                ]
+            },
+            "6179cde9-2d0a-4769-9b17-c7d3cee1908d": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 900,
+                    "y": 570
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "6fa7ebbe-9e54-4249-873a-e43ec72d9275",
+                    "a6204b71-dee6-4d80-a3f9-c19562fd2b9d",
+                    "597ba104-f344-40f9-ad4d-3004ed39cdec",
+                    "f26b9194-d16c-450e-833b-0b3061a491ec",
+                    "cc90a2f6-21c3-4de6-9c53-d6025cf83afb",
+                    "0ddc44bd-8908-466d-a537-027a753764e2",
+                    "422743cb-47fa-421c-a59b-4a845d4e2ff4",
+                    "14b55ae1-cdec-4eac-abcd-eb900a248c0e",
+                    "1b8d4d1a-a3d7-4e42-9dca-95a8aae00eb3",
+                    "5fdfeb99-32f1-4fca-b339-422f4766ce12"
+                ]
+            },
+            "ebd5e1a0-65af-4368-8ea1-f23fcd303e57": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 900,
+                    "y": 690
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "af20d322-1cf6-4774-bc71-340a47d92b0b": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 900,
+                    "y": 810
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "033695e4-5166-4e30-9083-6abebbb0a672": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 60,
+                    "y": 870
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "0059fe1c-d7d3-4150-a336-c47cf692d360": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1290,
+                    "y": 730
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "861f4e2b-0bfb-483e-909b-a16e0306106a": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1420,
+                    "y": 1140
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "9a0aa546-a93f-4752-8b3a-63e758bffcca": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1390,
+                    "y": 810
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "0059fe1c-d7d3-4150-a336-c47cf692d360"
+                ]
+            },
+            "b01a5931-fa3c-4a2a-93b5-83b4ada07c89": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 600,
+                    "y": 940
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "033695e4-5166-4e30-9083-6abebbb0a672"
+                ]
+            },
+            "1cce205c-1ee0-45bf-b227-4c67765fd7ff": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1580,
+                    "y": 810
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "6cba43d7-5748-491b-9787-9a63680e040d": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1490,
+                    "y": 1000
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "9a0aa546-a93f-4752-8b3a-63e758bffcca"
+                ]
+            },
+            "1914005c-8151-417b-87da-463322e97555": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 900,
+                    "y": 930
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "e88a31bc-47d4-4113-9fdc-9f6fd09f49ab": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 960,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "a28ef1ea-d8f2-4f34-b7eb-d3feffa7d341": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 960,
+                    "y": 210
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "a5078c7c-6043-480b-b03a-228dd1009bcd": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 960,
+                    "y": 330
+                },
+                "z": 1,
+                "embeds": [],
+                "dependson": [
+                    "e88a31bc-47d4-4113-9fdc-9f6fd09f49ab"
+                ]
+            },
+            "8a887d1e-39f4-42f3-ba33-49b6277b84f9": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1020,
+                    "y": 450
+                },
+                "z": 1,
+                "embeds": [],
+                "dependson": [
+                    "a28ef1ea-d8f2-4f34-b7eb-d3feffa7d341"
+                ]
+            },
+            "e8948f9f-7b61-47f3-8cfa-1baca9ed6f6b": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1020,
+                    "y": 570
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "908b31df-07e1-4714-8688-f039a57b3cdc": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1020,
+                    "y": 690
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "ecfdc397-0cb8-4142-9fea-178c09886c3d": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1020,
+                    "y": 810
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "908b31df-07e1-4714-8688-f039a57b3cdc"
+                ]
+            },
+            "aeadf9d5-cb46-49e3-aa43-31b290333bca": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1020,
+                    "y": 930
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "908b31df-07e1-4714-8688-f039a57b3cdc"
+                ]
+            },
+            "c85674c8-9355-4617-a6f2-76a8f442a8e7": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 60,
+                    "y": 990
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "908b31df-07e1-4714-8688-f039a57b3cdc"
+                ]
+            },
+            "370040df-d3f2-419f-9db8-8f9c29efde5a": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 180,
+                    "y": 990
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "79237857-6d0d-4a94-8ad6-1c08de81445c": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1080,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "1438bbb7-29cc-4b09-92f6-b3efd5daeb53": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1080,
+                    "y": 210
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "2e03b58e-cff5-4bd4-a32b-b88cc9652b70": {
+                "size": {
+                    "width": 240,
+                    "height": 240
+                },
+                "position": {
+                    "x": 60,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": [
+                    "2203852e-140b-4a99-bbef-0f98fd7aaa45"
+                ]
+            },
+            "388fe87f-7c4e-40d5-8211-0c746147402b": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1130,
+                    "y": 1000
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "78901633-db6e-4296-99ee-a276cfc26ee9": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1160,
+                    "y": 680
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "2203852e-140b-4a99-bbef-0f98fd7aaa45": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 90,
+                    "y": 150
+                },
+                "z": 2,
+                "parent": "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                "embeds": [],
+                "isassociatedwith": [
+                    "78901633-db6e-4296-99ee-a276cfc26ee9"
+                ],
+                "iscontainedinside": [
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70",
+                    "2e03b58e-cff5-4bd4-a32b-b88cc9652b70"
+                ]
+            },
+            "3ea01e2e-8324-4129-aa8d-40d93e9e48ff": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 420,
+                    "y": 1050
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "388fe87f-7c4e-40d5-8211-0c746147402b"
+                ]
+            },
+            "1b6331de-f8d1-4e22-a15d-049b15a9f5da": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 480,
+                    "y": 1190
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "3ea01e2e-8324-4129-aa8d-40d93e9e48ff",
+                    "861f4e2b-0bfb-483e-909b-a16e0306106a",
+                    "8514e786-03f2-4ffb-9cfb-2f4098ea3af9"
+                ]
+            },
+            "cf9224ff-334c-47d2-89b3-a7e46c6cd15c": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 660,
+                    "y": 1050
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "1b6331de-f8d1-4e22-a15d-049b15a9f5da"
+                ]
+            },
+            "3e6cf6c6-3696-4f3e-8131-3597a0e65770": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 780,
+                    "y": 1050
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "9512e36a-aa62-442f-a462-d4ac83fa7d29": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 900,
+                    "y": 1050
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "1b6331de-f8d1-4e22-a15d-049b15a9f5da"
+                ]
+            },
+            "213e74d5-ccf6-4193-8dbf-c9bf2ae5c2b4": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1020,
+                    "y": 1050
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "76379d7c-fab0-4b35-b8f0-4b0f7817c340": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 60,
+                    "y": 1110
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "1b6331de-f8d1-4e22-a15d-049b15a9f5da",
+                    "79237857-6d0d-4a94-8ad6-1c08de81445c"
+                ]
+            },
+            "dab79a93-6836-4fa7-8e67-9f81917e6959": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1730,
+                    "y": 830
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "e07512b6-ca52-446b-bced-093669ad570f": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1660,
+                    "y": 1000
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "9a0aa546-a93f-4752-8b3a-63e758bffcca",
+                    "fadb63fa-7693-49ed-a61b-c58a37014d4f"
+                ]
+            },
+            "8514e786-03f2-4ffb-9cfb-2f4098ea3af9": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1550,
+                    "y": 1140
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "fadb63fa-7693-49ed-a61b-c58a37014d4f": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1390,
+                    "y": 910
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "0059fe1c-d7d3-4150-a336-c47cf692d360"
+                ]
             }
         }
     },
@@ -961,6 +2068,9 @@
                 "TargetGroupARNs": [
                     {
                         "Ref": "ALBTargetGroup"
+                    },
+                    {
+                        "Ref": "ALBTargetGroupNoWAF"
                     }
                 ],
                 "Tags": [
@@ -2924,7 +4034,7 @@
                             "Type": "METHOD"
                         },
                         "PositionalConstraint": "EXACTLY",
-                        "TargetString": "post",
+                        "TargetString": "TBD",
                         "TextTransformation": "LOWERCASE"
                     }
                 ]
@@ -2956,7 +4066,7 @@
                             "Type": "METHOD"
                         },
                         "PositionalConstraint": "EXACTLY",
-                        "TargetString": "unknown",
+                        "TargetString": "TBD",
                         "TextTransformation": "LOWERCASE"
                     }
                 ]
@@ -3884,6 +4994,130 @@
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
                     "id": "b01a5931-fa3c-4a2a-93b5-83b4ada07c89"
+                }
+            }
+        },
+        "AliasRecordSetGroupNoWAF": {
+            "Type": "AWS::Route53::RecordSetGroup",
+            "Properties": {
+                "HostedZoneName": {
+                    "Fn::Join": [
+                        "",
+                        [
+                            {
+                                "Ref": "Domain"
+                            },
+                            "."
+                        ]
+                    ]
+                },
+                "Comment": "alias record for ELB NoWAF",
+                "RecordSets": [
+                    {
+                        "Name": {
+                            "Fn::Join": [
+                                "",
+                                [
+                                    "nowaf.",
+                                    {
+                                        "Ref": "Domain"
+                                    },
+                                    "."
+                                ]
+                            ]
+                        },
+                        "Type": "A",
+                        "AliasTarget": {
+                            "HostedZoneId": {
+                                "Fn::GetAtt": [
+                                    "ApplicationLoadBalancerNoWAF",
+                                    "CanonicalHostedZoneID"
+                                ]
+                            },
+                            "DNSName": {
+                                "Fn::GetAtt": [
+                                    "ApplicationLoadBalancerNoWAF",
+                                    "DNSName"
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "dab79a93-6836-4fa7-8e67-9f81917e6959"
+                }
+            }
+        },
+        "ALBListenerNoWAF": {
+            "Type": "AWS::ElasticLoadBalancingV2::Listener",
+            "Properties": {
+                "DefaultActions": [
+                    {
+                        "Type": "forward",
+                        "TargetGroupArn": {
+                            "Ref": "ALBTargetGroupNoWAF"
+                        }
+                    }
+                ],
+                "LoadBalancerArn": {
+                    "Ref": "ApplicationLoadBalancerNoWAF"
+                },
+                "Port": "443",
+                "Protocol": "HTTPS",
+                "Certificates": [
+                    {
+                        "CertificateArn": {
+                            "Ref": "certificateARN"
+                        }
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "e07512b6-ca52-446b-bced-093669ad570f"
+                }
+            }
+        },
+        "ALBTargetGroupNoWAF": {
+            "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+            "Properties": {
+                "Port": 80,
+                "Protocol": "HTTP",
+                "VpcId": {
+                    "Ref": "VpcID"
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "8514e786-03f2-4ffb-9cfb-2f4098ea3af9"
+                }
+            }
+        },
+        "ApplicationLoadBalancerNoWAF": {
+            "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+            "Properties": {
+                "Subnets": [
+                    {
+                        "Ref": "PublicSubnetKey1"
+                    },
+                    {
+                        "Ref": "PublicSubnetKey2"
+                    },
+                    {
+                        "Ref": "PublicSubnetKey3"
+                    }
+                ],
+                "SecurityGroups": [
+                    {
+                        "Ref": "LBSecurityGroup"
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "fadb63fa-7693-49ed-a61b-c58a37014d4f"
                 }
             }
         }
